@@ -7,7 +7,7 @@ describe 'FlameCLI::New::App' do
 	let(:app_name) { 'foo_bar' }
 
 	subject(:execute_command) do
-		`#{FLAME_CLI} new app #{app_name}`
+		Bundler.with_clean_env { `#{FLAME_CLI} new app #{app_name}` }
 	end
 
 	let(:template_dir)          { File.join(__dir__, '../../template') }
@@ -25,15 +25,19 @@ describe 'FlameCLI::New::App' do
 				'Copy template directories and files...',
 				'Clean directories...',
 				'Replace module names in template...',
-				'- Rakefile',
-				'- rollup.config.js',
+				'- configs/logger.rb',
+				'- configs/sequel.rb',
+				'- configs/config.rb',
+				'- configs/site.example.yaml',
 				'- config.ru',
 				'- application.rb',
-				'- config/config.rb',
-				'- config/sequel.rb',
 				'- controllers/_controller.rb',
 				'- controllers/site/_controller.rb',
 				'- controllers/site/index_controller.rb',
+				'- Rakefile',
+				'- views/site/index.html.erb',
+				'- views/site/layout.html.erb',
+				'- rollup.config.js',
 				'Grant permissions to files...',
 				'Done!'
 			)
@@ -91,13 +95,15 @@ describe 'FlameCLI::New::App' do
 
 			it do
 				is_expected.to match_words(
+					'FooBar::APP_DIRS',
 					'use Rack::Session::Cookie, ' \
 						'FB::Application.config[:session][:cookie]',
-					'FB::Application.config[:server][environment.to_s][:logs_dir]',
-					'FB::Application.config[:logger] = Logger.new',
+					'FB::Application.config[:logs_dir]',
+					'FB.const_defined?(:DB)',
 					'FB::DB.loggers <<',
 					'FB.logger',
 					'FB::DB.freeze',
+					'# FB::Acc = FB::Account',
 					'run FB::Application'
 				)
 			end
@@ -147,22 +153,30 @@ describe 'FlameCLI::New::App' do
 			end
 		end
 
-		describe 'config/config.rb' do
-			let(:path_parts) { ['config', 'config.rb'] }
+		describe 'configs/logger.rb' do
+			let(:path_parts) { ['configs', 'logger.rb'] }
+
+			it do
+				is_expected.to match_words(
+					'module FooBar'
+				)
+			end
+		end
+
+		describe 'configs/config.rb' do
+			let(:path_parts) { ['configs', 'config.rb'] }
 
 			it do
 				is_expected.to match_words(
 					'module FooBar',
-					"SITE_NAME = 'FooBar'",
-					"ORGANIZATION_NAME = 'FooBar LLC'",
 					'::FB = ::FooBar',
 					'FB::Application.config[:logger]'
 				)
 			end
 		end
 
-		describe 'config/sequel.rb' do
-			let(:path_parts) { ['config', 'sequel.rb'] }
+		describe 'configs/sequel.rb' do
+			let(:path_parts) { ['configs', 'sequel.rb'] }
 
 			it do
 				is_expected.to match_words(
@@ -174,29 +188,33 @@ describe 'FlameCLI::New::App' do
 
 	describe 'generates working app' do
 		before do
-			ENV['RACK_ENV'] = 'development'
+			Bundler.with_clean_env do
+				ENV['RACK_ENV'] = 'development'
 
-			execute_command
+				execute_command
 
-			Dir.chdir app_name
+				Dir.chdir app_name
 
-			%w[server].each do |config|
-				FileUtils.cp "config/#{config}.example.yaml", "config/#{config}.yaml"
+				%w[server session site].each do |config|
+					FileUtils.cp(
+						"configs/#{config}.example.yaml", "configs/#{config}.yaml"
+					)
+				end
+
+				## HACK for testing while some server is running
+				File.write(
+					'configs/server.yaml',
+					File.read('configs/server.yaml').sub('port: 3000', "port: #{port}")
+				)
+
+				system 'bundle install'
 			end
-
-			## HACK for testing while some server is running
-			File.write(
-				'config/server.yaml',
-				File.read('config/server.yaml').sub('port: 3000', "port: #{port}")
-			)
-
-			system 'bundle install --gemfile=Gemfile'
 		end
 
 		let(:port) { 3456 }
 
 		subject do
-			begin
+			Bundler.with_clean_env do
 				pid = spawn './server start'
 
 				number_of_attempts = 0
@@ -212,7 +230,7 @@ describe 'FlameCLI::New::App' do
 
 				response
 			ensure
-				`./server stop`
+				Bundler.with_clean_env { `./server stop` }
 				Process.wait pid
 			end
 		end
