@@ -1,5 +1,6 @@
 Gemfile.lock
 .ruby-version
+!template/.ruby-version
 
 # Gem files
 *.gem
