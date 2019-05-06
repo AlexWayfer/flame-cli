@@ -5,8 +5,32 @@ Layout/IndentationWidth:
   Width: 1
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
+Layout/MultilineOperationIndentation:
+  EnforcedStyle: indented
 Layout/AlignParameters:
   EnforcedStyle: with_fixed_indentation
+Layout/AlignArguments:
+  EnforcedStyle: with_fixed_indentation
+Layout/IndentFirstParameter:
+  EnforcedStyle: consistent
+Layout/IndentFirstArgument:
+  EnforcedStyle: consistent
+Layout/IndentFirstArrayElement:
+  EnforcedStyle: consistent
+Layout/IndentFirstHashElement:
+  EnforcedStyle: consistent
+Layout/MultilineArrayBraceLayout:
+  EnforcedStyle: new_line
+Layout/MultilineHashBraceLayout:
+  EnforcedStyle: new_line
+Layout/FirstArrayElementLineBreak:
+  Enabled: true
+Layout/FirstHashElementLineBreak:
+  Enabled: true
+Layout/FirstMethodArgumentLineBreak:
+  Enabled: true
+Layout/FirstMethodParameterLineBreak:
+  Enabled: true
 
 Style/ParenthesesAroundCondition:
   AllowInMultilineConditions: true
