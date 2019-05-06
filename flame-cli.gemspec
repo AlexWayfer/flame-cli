@@ -26,14 +26,14 @@ Gem::Specification.new do |s|
 	s.add_runtime_dependency 'clamp', '~> 1.3'
 	s.add_runtime_dependency 'gorilla_patch', '~> 3.0'
 
-	s.add_development_dependency 'codecov', '~> 0'
-	s.add_development_dependency 'pry', '~> 0'
+	s.add_development_dependency 'codecov', '~> 0.1'
+	s.add_development_dependency 'pry', '~> 0.12'
 	s.add_development_dependency 'pry-byebug', '~> 3.5'
 	s.add_development_dependency 'puma', '~> 3.12'
 	s.add_development_dependency 'rake', '~> 12'
 	s.add_development_dependency 'rspec', '~> 3.7'
 	s.add_development_dependency 'rubocop', '~> 0.65.0'
-	s.add_development_dependency 'simplecov', '~> 0'
+	s.add_development_dependency 'simplecov', '~> 0.16'
 
 	s.files = Dir['{lib,template}/**/{*,.*}']
 	s.executables = ['flame']
