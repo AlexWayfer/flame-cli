@@ -15,7 +15,7 @@ module <%= @module_name %>
 		include RakeHelpers
 		include Memery
 
-		CONFIGS_DIR = File.join(__dir__, 'config')
+		CONFIG_DIR = File.join(__dir__, 'config')
 
 		def initialize
 			define_spec_task
@@ -69,7 +69,7 @@ module <%= @module_name %>
 		end
 
 		memoize def db_config
-			db_config_file = File.join(CONFIGS_DIR, 'database.yaml')
+			db_config_file = File.join(CONFIG_DIR, 'database.yaml')
 
 			return unless File.exist? db_config_file
 
@@ -182,7 +182,7 @@ module <%= @module_name %>
 
 		def define_locales_namespace
 			namespace :locales do
-				crowdin_config_file = File.join(CONFIGS_DIR, 'crowdin.yaml')
+				crowdin_config_file = File.join(CONFIG_DIR, 'crowdin.yaml')
 
 				desc 'Upload files for translation'
 				task :upload do
@@ -265,7 +265,7 @@ module <%= @module_name %>
 			## Command for deploy code from git to servers
 			desc 'Deploy to servers'
 			task :deploy do
-				servers = YAML.load_file File.join(CONFIGS_DIR, 'deploy.yaml')
+				servers = YAML.load_file File.join(CONFIG_DIR, 'deploy.yaml')
 				servers.each do |server|
 					update_command = "cd #{server[:path]} && rake update"
 					sh "ssh -t #{server[:ssh]} 'bash --login -c \"#{update_command}\"'"

@@ -7,9 +7,9 @@ require 'English'
 require 'yaml'
 require 'fileutils'
 
-CONFIGS_DIR = File.join(__dir__, 'configs')
+CONFIG_DIR = File.join(__dir__, 'config')
 
-SERVER_CONFIG = YAML.load_file File.join(CONFIGS_DIR, 'server.yaml')
+SERVER_CONFIG = YAML.load_file File.join(CONFIG_DIR, 'server.yaml')
 
 ENVIRONMENT = ENV['RACK_ENV'] || SERVER_CONFIG[:environment]
 
@@ -102,7 +102,7 @@ def server(command)
 end
 
 def puma_command(command)
-	bash "bundle exec pumactl -F #{File.join(CONFIGS_DIR, 'puma.rb')} #{command}"
+	bash "bundle exec pumactl #{command}"
 end
 
 def web_server(command)

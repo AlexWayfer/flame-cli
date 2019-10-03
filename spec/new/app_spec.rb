@@ -25,10 +25,10 @@ describe 'FlameCLI::New::App' do
 				'Copy template directories and files...',
 				'Clean directories...',
 				'Replace module names in template...',
-				'- configs/logger.rb',
-				'- configs/sequel.rb',
-				'- configs/config.rb',
-				'- configs/site.example.yaml',
+				'- config/logger.rb',
+				'- config/sequel.rb',
+				'- config/config.rb',
+				'- config/site.example.yaml',
 				'- config.ru',
 				'- application.rb',
 				'- controllers/_controller.rb',
@@ -153,8 +153,8 @@ describe 'FlameCLI::New::App' do
 			end
 		end
 
-		describe 'configs/logger.rb' do
-			let(:path_parts) { ['configs', 'logger.rb'] }
+		describe 'config/logger.rb' do
+			let(:path_parts) { ['config', 'logger.rb'] }
 
 			it do
 				is_expected.to match_words(
@@ -163,8 +163,8 @@ describe 'FlameCLI::New::App' do
 			end
 		end
 
-		describe 'configs/config.rb' do
-			let(:path_parts) { ['configs', 'config.rb'] }
+		describe 'config/config.rb' do
+			let(:path_parts) { ['config', 'config.rb'] }
 
 			it do
 				is_expected.to match_words(
@@ -175,8 +175,8 @@ describe 'FlameCLI::New::App' do
 			end
 		end
 
-		describe 'configs/sequel.rb' do
-			let(:path_parts) { ['configs', 'sequel.rb'] }
+		describe 'config/sequel.rb' do
+			let(:path_parts) { ['config', 'sequel.rb'] }
 
 			it do
 				is_expected.to match_words(
@@ -197,14 +197,14 @@ describe 'FlameCLI::New::App' do
 
 				%w[server session site].each do |config|
 					FileUtils.cp(
-						"configs/#{config}.example.yaml", "configs/#{config}.yaml"
+						"config/#{config}.example.yaml", "config/#{config}.yaml"
 					)
 				end
 
 				## HACK for testing while some server is running
 				File.write(
-					'configs/server.yaml',
-					File.read('configs/server.yaml').sub('port: 3000', "port: #{port}")
+					'config/server.yaml',
+					File.read('config/server.yaml').sub('port: 3000', "port: #{port}")
 				)
 
 				system 'bundle install'
