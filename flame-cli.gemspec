@@ -32,7 +32,7 @@ Gem::Specification.new do |s|
 	s.add_development_dependency 'puma', '~> 3.12'
 	s.add_development_dependency 'rake', '~> 12.3'
 	s.add_development_dependency 'rspec', '~> 3.7'
-	s.add_development_dependency 'rubocop', '~> 0.68.1'
+	s.add_development_dependency 'rubocop', '~> 0.80.1'
 	s.add_development_dependency 'simplecov', '~> 0.16'
 
 	s.files = Dir['{lib,template}/**/{*,.*}']
