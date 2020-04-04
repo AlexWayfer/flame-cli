@@ -41,12 +41,12 @@ module Flame
 
 				def clean_dirs
 					puts 'Clean directories...'
-					FileUtils.rm Dir['**/*/.keep']
+					FileUtils.rm Dir.glob('**/.keep', File::FNM_DOTMATCH)
 				end
 
 				def render_templates
 					puts 'Replace module names in template...'
-					Dir['**/*.erb'].each do |file|
+					Dir.glob('**/*.erb', File::FNM_DOTMATCH).each do |file|
 						file_pathname = Pathname.new(file)
 						basename_pathname = file_pathname.sub_ext('')
 						puts "- #{basename_pathname}"

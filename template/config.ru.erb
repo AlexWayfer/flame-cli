@@ -1,23 +1,10 @@
 # frozen_string_literal: true
 
+require_relative 'constants'
+
 environment = ENV['RACK_ENV'].to_sym
 
 is_development = environment == :development
-
-module <%= @module_name %>
-	APP_DIRS = %w[
-		configs
-		libs
-		models
-		# policies
-		helpers
-		# mailers
-		# actions
-		forms
-		# view_objects
-		controllers
-	].freeze
-end
 
 ## Require gems
 require 'bundler/setup'
@@ -43,13 +30,14 @@ require 'pp'
 
 # require 'money/bank/google_currency'
 
-## Require dirs
-Flame::Application.require_dirs(
-	<%= @module_name %>::APP_DIRS
-)
-
 ## Require application
-require './application'
+require_relative 'application'
+
+## Require dirs
+<%= @short_module_name %>::Application.require_dirs <%= @short_module_name %>::APP_DIRS, ignore: [%r{lib/\w+/spec/}]
+
+## Require routes
+require_relative 'routes'
 
 ## Use session middleware
 if <%= @short_module_name %>::Application.config[:session]
@@ -60,29 +48,7 @@ end
 use Rack::Protection::MaximumCookie
 
 ## Access Logger
-use Rack::CommonLogger, Logger.new(
-	if is_development
-		$stdout
-	else
-		File.join(<%= @short_module_name %>::Application.config[:logs_dir], 'access')
-	end,
-	'daily'
-)
-
-if <%= @short_module_name %>.const_defined?(:DB)
-	## SQL Logger
-	if is_development
-		<%= @short_module_name %>::DB.loggers <<
-			if ENV['RACK_CONSOLE']
-				Logger.new($stdout)
-			else
-				<%= @short_module_name %>.logger
-			end
-	end
-
-	## Freeze DB (not for `rake console`)
-	<%= @short_module_name %>::DB.freeze unless ENV['RACK_CONSOLE']
-end
+use Rack::CommonLogger, <%= @short_module_name %>::Application.logger
 
 ## Aliases for rack-console
 if ENV['RACK_CONSOLE']
