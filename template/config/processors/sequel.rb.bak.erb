@@ -1,0 +1,63 @@
+# frozen_string_literal: true
+
+require 'yaml'
+
+require 'sequel'
+
+## Sequel configuration and methods
+module <%= @module_name %>
+	module ConfigProcessors
+		## Database initialize for Sequel
+		class Sequel
+			def initialize(config)
+				@config = config
+
+				@config.load_yaml :database
+
+				@config[:database] =
+					@config[:database][ENV.fetch('RACK_ENV', 'development')]
+				env_db_name = ENV['DB_NAME']
+				@config[:database][:database] = env_db_name if env_db_name
+
+				configure_sequel
+			rescue Flame::Errors::ConfigFileNotFoundError
+				nil
+			end
+
+			private
+
+			EXTENSIONS = %i[
+				error_sql
+				pg_enum
+				pg_json
+				pg_timestamptz
+				server_block
+			].freeze
+
+			PLUGINS = %i[
+				timestamps
+				json_serializer
+				dataset_associations
+				association_multi_add_remove
+				values_methods
+			].freeze
+
+			def configure_sequel
+				::Sequel::Model.raise_on_save_failure = false
+
+				EXTENSIONS.each do |extension_name|
+					<%= @short_module_name %>::Application.db_connection.extension extension_name
+				end
+
+				PLUGINS.each { |plugin_name| ::Sequel::Model.plugin plugin_name }
+
+				if @config[:environment] == 'development'
+					<%= @short_module_name %>::Application.db_connection.loggers << <%= @short_module_name %>::Application.logger
+				end
+
+				## Freeze DB (not for `toys console`)
+				<%= @short_module_name %>::Application.db_connection.freeze unless ENV['RACK_CONSOLE']
+			end
+		end
+	end
+end

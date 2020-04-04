@@ -1,0 +1,24 @@
+# frozen_string_literal: true
+
+module <%= @module_name %>
+	module Forms\<\%
+		modules.map.with_index do |module_name, index|
+	\%\>
+		\<\%= "\t" * index %>module <\%= module_name
+	\%\>\<\%
+		end
+	\%\>
+		\<\%=
+			class_indentation
+		\%\>class \<\%= class_name \%\> < Forms::Model::\<\%= parent_form \%\>
+		\<\%=
+			class_indentation
+		\%\>end\<\%
+	modules.map.with_index do |_module_name, index|
+		reverse_index = modules.size - index.next
+	\%\>
+		\<\%= "\t" * reverse_index \%\>end\<\%
+	end
+\%\>
+	end
+end

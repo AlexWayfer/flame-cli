@@ -8,7 +8,7 @@ module <%= @module_name %>
 		private
 
 		def logger
-			<%= @short_module_name %>.logger
+			<%= @short_module_name %>::Application.logger
 		end
 	end
 end
