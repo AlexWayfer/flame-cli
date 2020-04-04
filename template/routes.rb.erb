@@ -1,0 +1,6 @@
+# frozen_string_literal: true
+
+<%= @short_module_name %>::Application.class_exec do
+	## Site
+	mount :site, '/'
+end
