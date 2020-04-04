@@ -2,12 +2,9 @@
 
 source 'https://rubygems.org'
 
-## https://github.com/bundler/bundler/issues/4978
-git_source(:github) { |name| "https://github.com/#{name}.git" }
-
 group :system do
 	gem 'bundler'
-	gem 'gorilla_patch', github: 'AlexWayfer/gorilla_patch'
+	gem 'gorilla_patch'
 	# gem 'httpx'
 	gem 'memery'
 	gem 'pry-byebug'
@@ -19,7 +16,10 @@ group :server do
 	gem 'flame-flash', github: 'AlexWayfer/flame-flash'
 	gem 'puma'
 	gem 'rack-contrib'
-	gem 'rack-protection-maximum_cookie'
+	## https://github.com/mwpastore/rack-protection-maximum_cookie/pull/4
+	gem 'rack-protection-maximum_cookie',
+		github: 'AlexWayfer/rack-protection-maximum_cookie',
+		branch: 'update_rack_dependency'
 	gem 'rack-slashenforce'
 	gem 'rack-utf8_sanitizer'
 	gem 'rack_csrf', require: 'rack/csrf'
@@ -61,37 +61,38 @@ end
 # 	gem 'mail'
 # end
 
-## assets
-# gem 'sass'
-
 # group :test do
-# 	gem 'page-object'
+# 	gem 'database_cleaner'
+# 	gem 'fabrication'
+# 	# gem 'page-object'
+# 	gem 'rack-test'
 # 	gem 'rspec'
-# 	gem 'watir-rspec'
 # end
 
 group :others do
 	# gem 'faker'
 	# gem 'kramdown'
 	# gem 'retries',
+	# gem 'money-oxr',
+	# 	## https://github.com/edlebert/money-oxr/pull/7
+	# 	github: 'AlexWayfer/money-oxr', branch: 'add_flock_for_cache'
 	# 	## https://github.com/ooyala/retries/pull/9
 	# 	github: 'AlexWayfer/retries', branch: 'v2'
 	# gem 'sentry-raven'
 	# gem 'shrine'
 	# gem 'tzinfo'
 	# gem 'tzinfo-data'
+	## https://github.com/biola/Voight-Kampff/pull/38
 	# gem 'voight_kampff', github: 'AlexWayfer/Voight-Kampff', branch: 'v2'
 end
 
-group :rake do
-	gem 'configs_rake', github: 'AlexWayfer/configs_rake'
+group :toys do
+	gem 'diffy'
+	gem 'paint'
 	gem 'pry'
 	gem 'pry-doc'
-	# gem 'psql_rake', github: 'AlexWayfer/psql_rake'
 	gem 'rack-console'
-	gem 'rake'
-	gem 'rake_helpers', github: 'AlexWayfer/rake_helpers'
-	# gem 'sequel_rake', github: 'AlexWayfer/sequel_rake'
+	gem 'toys'
 end
 
 # group :benchmark do

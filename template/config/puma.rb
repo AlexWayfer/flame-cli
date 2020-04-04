@@ -1,7 +1,9 @@
 #!/usr/bin/env puma
 # frozen_string_literal: true
 
+require 'etc'
 require 'yaml'
+
 config = YAML.load_file(File.join(__dir__, 'server.yaml'))
 
 environment = ENV['RACK_ENV'] || config[:environment]
