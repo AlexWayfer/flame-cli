@@ -1,0 +1,13 @@
+# frozen_string_literal: true
+
+desc 'Print application routes'
+
+def run
+	require 'rack'
+	ENV['RACK_ENV'] ||= 'development'
+
+	## Properly loads environment
+	Rack::Builder.parse_file File.join(ROOT_DIR, 'config.ru')
+
+	puts <%= @short_module_name %>::Application.router.routes
+end

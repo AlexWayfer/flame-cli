@@ -1,0 +1,6 @@
+Layout/EmptyLines:
+  Enabled: false
+Layout/EmptyLineBetweenDefs:
+  Enabled: false
+Metrics/MethodLength:
+  Enabled: false

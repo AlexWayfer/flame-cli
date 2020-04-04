@@ -7,9 +7,7 @@ require 'English'
 require 'yaml'
 require 'fileutils'
 
-CONFIGS_DIR = File.join(__dir__, 'configs')
-
-SERVER_CONFIG = YAML.load_file File.join(CONFIGS_DIR, 'server.yaml')
+SERVER_CONFIG = YAML.load_file File.join(__dir__, 'config', 'server.yaml')
 
 ENVIRONMENT = ENV['RACK_ENV'] || SERVER_CONFIG[:environment]
 
@@ -69,14 +67,14 @@ def show_usage
 		       kill - Kill server (and filewatcher)
 		    restart - Restart server
 		    monitor - Show logs
-		      devel - Restart and monitor server
-		         ps - Show processes of server
+		 devel, dev - Restart and monitor server
+		 status, ps - Show processes of server
 	USAGE
 end
 
 def bash(command, print: true)
 	puts command if print
-	system bash_command(command)
+	system bash_command(command) || abort
 end
 
 def bash_command(command)
@@ -90,9 +88,10 @@ def bash_spawn(command, print: true)
 end
 
 def server(command)
+	abort unless bash "#{__dir__}/exe/setup/ruby.sh"
 	if %i[start restart].include?(command) &&
-	   !(dependencies_check && assets_build)
-		exit
+	   !bash("#{__dir__}/exe/setup/node.sh")
+		abort
 	end
 	if %i[stop restart].include?(command)
 		filewatcher_pids_file = PidsFile.new(:filewatcher)
@@ -102,7 +101,7 @@ def server(command)
 end
 
 def puma_command(command)
-	bash "bundle exec pumactl -F #{File.join(CONFIGS_DIR, 'puma.rb')} #{command}"
+	bash "bundle exec pumactl #{command}"
 end
 
 def web_server(command)
@@ -197,8 +196,8 @@ when 'kill'
 	bash 'pkill -f puma'
 when 'monitor'
 	monitor_server
-when 'devel'
-	bash 'rake configs:check'
+when 'devel', 'dev'
+	bash 'toys config check'
 	server :restart
 	if SERVER_CONFIG[ENVIRONMENT][:daemonize]
 		puts 'Waiting for logs...'

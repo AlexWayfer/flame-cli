@@ -7,7 +7,7 @@ describe 'FlameCLI::New::App' do
 	let(:app_name) { 'foo_bar' }
 
 	subject(:execute_command) do
-		Bundler.with_clean_env { `#{FLAME_CLI} new app #{app_name}` }
+		Bundler.with_original_env { `#{FLAME_CLI} new app #{app_name}` }
 	end
 
 	let(:template_dir)          { File.join(__dir__, '../../template') }
@@ -25,19 +25,20 @@ describe 'FlameCLI::New::App' do
 				'Copy template directories and files...',
 				'Clean directories...',
 				'Replace module names in template...',
-				'- configs/logger.rb',
-				'- configs/sequel.rb',
-				'- configs/config.rb',
-				'- configs/site.example.yaml',
 				'- config.ru',
+				'- constants.rb',
 				'- application.rb',
 				'- controllers/_controller.rb',
 				'- controllers/site/_controller.rb',
 				'- controllers/site/index_controller.rb',
-				'- Rakefile',
+				'- routes.rb',
 				'- views/site/index.html.erb',
 				'- views/site/layout.html.erb',
 				'- rollup.config.js',
+				'- config/config.rb',
+				'- config/site.example.yaml',
+				'- config/processors/logger.rb',
+				'- config/processors/sequel.rb.bak',
 				'Grant permissions to files...',
 				'Done!'
 			)
@@ -56,12 +57,12 @@ describe 'FlameCLI::New::App' do
 		before { execute_command }
 
 		let(:files) do
-			Dir[File.join(template_dir, '**/*')]
+			Dir.glob(File.join(template_dir, '**/*'), File::FNM_DOTMATCH)
 				.map do |filename|
 					filename_pathname = Pathname.new(filename)
 						.relative_path_from(template_dir_pathname)
 
-					next if File.dirname(filename).split(File::SEPARATOR).include? 'views'
+					next if filename_pathname.basename.to_s == '.keep'
 
 					if filename_pathname.extname == template_ext
 						filename_pathname = filename_pathname.sub_ext('')
@@ -80,7 +81,7 @@ describe 'FlameCLI::New::App' do
 	describe 'cleans directories' do
 		before { execute_command }
 
-		subject { Dir[File.join(app_name, '**/.keep')] }
+		subject { Dir.glob("#{app_name}/**/.keep", File::FNM_DOTMATCH) }
 
 		it { is_expected.to be_empty }
 	end
@@ -90,50 +91,118 @@ describe 'FlameCLI::New::App' do
 
 		subject { File.read File.join(app_name, *path_parts) }
 
-		describe 'config.ru' do
-			let(:path_parts) { 'config.ru' }
+		let(:path_parts) { self.class.description.split('/') }
 
+		describe '.toys/config/check.rb' do
 			it do
 				is_expected.to match_words(
-					'FooBar::APP_DIRS',
-					'use Rack::Session::Cookie, ' \
-						'FB::Application.config[:session][:cookie]',
-					'FB::Application.config[:logs_dir]',
-					'FB.const_defined?(:DB)',
-					'FB::DB.loggers <<',
-					'FB.logger',
-					'FB::DB.freeze',
-					'# FB::Acc = FB::Account',
-					'run FB::Application'
+					'ExampleFile.all(FB::Application.config[:config_dir])'
+				)
+			end
+		end
+
+		describe '.toys/database/.preload.rb' do
+			it do
+				is_expected.to match_words(
+					'@db_config = FB::Application.config[:database]',
+					'@db_connection = FB::Application.db_connection'
+				)
+			end
+		end
+
+		describe '.toys/generate/form/template.rb.erb' do
+			it do
+				is_expected.to match_words(
+					'module FooBar'
+				)
+			end
+		end
+
+		describe '.toys/generate/model/template.rb.erb' do
+			it do
+				is_expected.to match_words(
+					'module FooBar'
+				)
+			end
+		end
+
+		describe '.toys/routes.rb' do
+			it do
+				is_expected.to match_words(
+					'puts FB::Application.router.routes'
 				)
 			end
 		end
 
 		describe 'application.rb' do
-			let(:path_parts) { 'application.rb' }
+			it do
+				is_expected.to match_words(
+					'module FooBar'
+				)
+			end
+		end
 
+		describe 'config.ru' do
+			it do
+				is_expected.to match_words(
+					'FB::Application.require_dirs FB::APP_DIRS',
+					'if FB::Application.config[:session]',
+					'use Rack::Session::Cookie, ' \
+						'FB::Application.config[:session][:cookie]',
+					'use Rack::CommonLogger, FB::Application.logger',
+					'run FB::Application'
+				)
+			end
+		end
+
+		describe 'config/config.rb' do
+			it do
+				is_expected.to match_words(
+					'FB::Application.config.instance_exec do',
+					'FB::ConfigProcessors.const_get(processor_name).new self'
+				)
+			end
+		end
+
+		describe 'config/processors/logger.rb' do
+			it do
+				is_expected.to match_words(
+					'module FooBar'
+				)
+			end
+		end
+
+		describe 'config/processors/sequel.rb.bak' do
 			it do
 				is_expected.to match_words(
 					'module FooBar',
-					'include FB::Config'
+					'FB::Application.db_connection.extension extension_name',
+					'FB::Application.db_connection.loggers << FB::Application.logger',
+					"FB::Application.db_connection.freeze unless ENV['RACK_CONSOLE']"
+				)
+			end
+		end
+
+		describe 'constants.rb' do
+			it do
+				is_expected.to match_words(
+					'module FooBar',
+					'::FB = ::FooBar',
+					'APP_DIRS ='
 				)
 			end
 		end
 
 		describe 'controllers/_controller.rb' do
-			let(:path_parts) { ['controllers', '_controller.rb'] }
-
 			it do
 				is_expected.to match_words(
 					'module FooBar',
-					'FB.logger'
+					'FB::Application.logger'
 				)
 			end
 		end
 
 		describe 'controllers/site/_controller.rb' do
-			let(:path_parts) { ['controllers', 'site', '_controller.rb'] }
-
 			it do
 				is_expected.to match_words(
 					'module FooBar',
@@ -143,8 +212,6 @@ describe 'FlameCLI::New::App' do
 		end
 
 		describe 'controllers/site/index_controller.rb' do
-			let(:path_parts) { ['controllers', 'site', 'index_controller.rb'] }
-
 			it do
 				is_expected.to match_words(
 					'module FooBar',
@@ -153,34 +220,47 @@ describe 'FlameCLI::New::App' do
 			end
 		end
 
-		describe 'configs/logger.rb' do
-			let(:path_parts) { ['configs', 'logger.rb'] }
-
+		describe 'README.md' do
 			it do
 				is_expected.to match_words(
-					'module FooBar'
+					'# FooBar',
+					'`createuser -U postgres foo_bar`',
+					'`createdb -U postgres foo_bar -O foo_bar`',
+					'`psql -U postgres -c "CREATE EXTENSION citext" foo_bar`',
+					'Add UNIX-user for project: `adduser foo_bar`',
+					'Make symbolic link of project directory to `/var/www/foo_bar`'
 				)
 			end
 		end
 
-		describe 'configs/config.rb' do
-			let(:path_parts) { ['configs', 'config.rb'] }
-
+		describe 'rollup.config.js' do
 			it do
 				is_expected.to match_words(
-					'module FooBar',
-					'::FB = ::FooBar',
-					'FB::Application.config[:logger]'
+					"name: 'FB'"
 				)
 			end
 		end
 
-		describe 'configs/sequel.rb' do
-			let(:path_parts) { ['configs', 'sequel.rb'] }
-
+		describe 'rollup.config.js' do
 			it do
 				is_expected.to match_words(
-					'module FooBar'
+					"name: 'FB'"
+				)
+			end
+		end
+
+		describe 'routes.rb' do
+			it do
+				is_expected.to match_words(
+					'FB::Application.class_exec do'
+				)
+			end
+		end
+
+		describe 'views/site/layout.html.erb' do
+			it do
+				is_expected.to match_words(
+					'<title><%= FB::Application.config[:site][:site_name] %></title>'
 				)
 			end
 		end
@@ -188,7 +268,7 @@ describe 'FlameCLI::New::App' do
 
 	describe 'generates working app' do
 		before do
-			Bundler.with_clean_env do
+			Bundler.with_original_env do
 				ENV['RACK_ENV'] = 'development'
 
 				execute_command
@@ -197,31 +277,43 @@ describe 'FlameCLI::New::App' do
 
 				%w[server session site].each do |config|
 					FileUtils.cp(
-						"configs/#{config}.example.yaml", "configs/#{config}.yaml"
+						"config/#{config}.example.yaml", "config/#{config}.yaml"
 					)
 				end
 
 				## HACK for testing while some server is running
 				File.write(
-					'configs/server.yaml',
-					File.read('configs/server.yaml').sub('port: 3000', "port: #{port}")
+					'config/server.yaml',
+					File.read('config/server.yaml').sub('port: 3000', "port: #{port}")
 				)
 
 				system 'bundle install'
 			end
 		end
 
-		let(:port) { 3456 }
+		let(:port) do
+			## https://stackoverflow.com/a/5985984/2630849
+			socket = Socket.new(:INET, :STREAM, 0)
+			socket.bind Addrinfo.tcp('127.0.0.1', 0)
+			result = socket.local_address.ip_port
+			socket.close
+			result
+		end
 
 		subject do
-			Bundler.with_clean_env do
+			Bundler.with_original_env do
 				pid = spawn './server start'
+
+				Process.detach pid
+
+				sleep 0.1
 
 				number_of_attempts = 0
 
 				begin
 					number_of_attempts += 1
-					response = Net::HTTP.get URI("http://localhost:#{port}/")
+					## https://github.com/gruntjs/grunt-contrib-connect/issues/25#issuecomment-16293494
+					response = Net::HTTP.get URI("http://127.0.0.1:#{port}/")
 				rescue Errno::ECONNREFUSED => e
 					sleep 1
 					retry if number_of_attempts < 10
@@ -230,7 +322,7 @@ describe 'FlameCLI::New::App' do
 
 				response
 			ensure
-				Bundler.with_clean_env { `./server stop` }
+				Bundler.with_original_env { `./server stop` }
 				Process.wait pid
 			end
 		end

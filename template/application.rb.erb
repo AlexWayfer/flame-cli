@@ -1,10 +1,37 @@
 # frozen_string_literal: true
 
 module <%= @module_name %>
-	## Class for application (mounting controllers)
+	## Class for application
 	class Application < Flame::Application
-		include <%= @short_module_name %>::Config
+		class << self
+			include Memery
 
-		mount :site, '/'
+			memoize def logger
+				::Logger.new(
+					if (config[:environment] == 'development') ||
+							ENV['RACK_CONSOLE'] ||
+							(File.basename($PROGRAM_NAME) == 'toys')
+						$stdout
+					else
+						File.join(config[:logs_dir], 'stdout.log')
+					end
+				)
+			end
+
+			def db_connection
+				::Sequel.connect config[:database]
+			rescue Sequel::DatabaseConnectionError => e
+				logger.error e.full_message
+				nil
+			end
+			memoize :db_connection
+
+			# memoize def shrine_uploaders
+			# 	{
+			# 		image: Class.new(::Shrine),
+			# 		document: Class.new(::Shrine)
+			# 	}
+			# end
+		end
 	end
 end
