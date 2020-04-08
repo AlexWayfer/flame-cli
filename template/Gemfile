@@ -33,6 +33,7 @@ group :linter do
 	gem 'bundler-audit'
 	gem 'rubocop'
 	gem 'rubocop-performance'
+	gem 'rubocop-rspec'
 end
 
 # group :database do
