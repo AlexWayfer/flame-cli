@@ -4,8 +4,6 @@ require_relative 'constants'
 
 environment = ENV['RACK_ENV'].to_sym
 
-is_development = environment == :development
-
 ## Require gems
 require 'bundler/setup'
 Bundler.require(

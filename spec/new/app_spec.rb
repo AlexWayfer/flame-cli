@@ -266,6 +266,30 @@ describe 'FlameCLI::New::App' do
 		end
 	end
 
+	describe 'generates RuboCop-satisfying app' do
+		before do
+			Bundler.with_original_env do
+				execute_command
+
+				Dir.chdir app_name
+
+				system 'bundle install'
+			end
+		end
+
+		after do
+			Dir.chdir '..'
+		end
+
+		subject do
+			Bundler.with_original_env do
+				system 'bundle exec rubocop'
+			end
+		end
+
+		it { is_expected.to be true }
+	end
+
 	describe 'generates working app' do
 		before do
 			Bundler.with_original_env do
