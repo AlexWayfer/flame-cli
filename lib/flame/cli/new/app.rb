@@ -34,7 +34,7 @@ module Flame
 
 				def copy_template
 					puts 'Copy template directories and files...'
-					FileUtils.cp_r File.join(__dir__, '../../template/.'), '.'
+					FileUtils.cp_r File.join(__dir__, '../../../../template/.'), '.'
 					clean_dirs
 					render_templates
 				end
