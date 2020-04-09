@@ -10,12 +10,13 @@ describe 'Flame::CLI::New::App' do
 
 	let(:app_name) { 'foo_bar' }
 
-	let(:template_dir)          { "#{__dir__}/../../../../template" }
+	let(:root_dir) { "#{__dir__}/../../../.." }
+	let(:template_dir) { "#{root_dir}/template" }
 	let(:template_dir_pathname) { Pathname.new(template_dir) }
-	let(:template_ext)          { '.erb' }
+	let(:template_ext) { '.erb' }
 
 	after do
-		FileUtils.rm_r "#{__dir__}/../../../../#{app_name}"
+		FileUtils.rm_r "#{root_dir}/#{app_name}"
 	end
 
 	describe 'output' do

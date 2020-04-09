@@ -1,9 +1,8 @@
-#!/usr/bin/env ruby
 # frozen_string_literal: true
 
 require 'clamp'
 
-require_relative 'new'
+require_relative 'cli/new'
 
 module Flame
 	## CLI for Flame
@@ -11,5 +10,3 @@ module Flame
 		subcommand %w[initialize init new], 'create new entity', Flame::CLI::New
 	end
 end
-
-Flame::CLI.run

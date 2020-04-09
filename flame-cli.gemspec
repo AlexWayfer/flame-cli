@@ -38,5 +38,6 @@ Gem::Specification.new do |s|
 	s.add_development_dependency 'simplecov', '~> 0.16'
 
 	s.files = Dir.glob('{lib,template}/**/*', File::FNM_DOTMATCH)
+	s.bindir = 'exe'
 	s.executables = ['flame']
 end

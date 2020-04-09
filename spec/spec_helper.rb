@@ -10,7 +10,7 @@ end
 
 require 'pry-byebug'
 
-FLAME_CLI = File.join(__dir__, '../bin/flame').freeze
+FLAME_CLI = File.join(__dir__, '../exe/flame').freeze
 
 def transform_words_into_regexp(*words)
 	words.map { |word| "(?=.*#{Regexp.escape(word)})" }.join
