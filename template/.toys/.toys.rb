@@ -8,6 +8,9 @@ subtool_apply do
 	include :exec, exit_on_nonzero_status: true unless include?(:exec)
 end
 
+require 'benchmark_toys_template'
+expand BenchmarkToysTemplate
+
 alias_tool :db, :database
 
 alias_tool :psql, 'database:psql'

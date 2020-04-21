@@ -88,6 +88,7 @@ group :others do
 end
 
 group :toys do
+	gem 'benchmark_toys_template', path: '~/Projects/ruby/benchmark_toys_template'
 	gem 'diffy'
 	gem 'paint'
 	gem 'pry'
