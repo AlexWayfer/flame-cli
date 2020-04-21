@@ -5,6 +5,8 @@ Layout/EmptyLineBetweenDefs:
 Metrics/MethodLength:
   Enabled: false
 
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
 Lint/RaiseException:
   Enabled: true
 Lint/StructNewOverride:
@@ -14,4 +16,6 @@ Style/HashEachMethods:
 Style/HashTransformKeys:
   Enabled: true
 Style/HashTransformValues:
+  Enabled: true
+Style/ExponentialNotation:
   Enabled: true

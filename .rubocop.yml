@@ -2,8 +2,8 @@ require:
   - rubocop-performance
   - rubocop-rspec
 
-Layout/Tab:
-  Enabled: false
+Layout/IndentationStyle:
+  EnforcedStyle: tabs
   IndentationWidth: 2
 Layout/IndentationWidth:
   Width: 1
@@ -35,6 +35,8 @@ Layout/FirstMethodArgumentLineBreak:
   Enabled: true
 Layout/FirstMethodParameterLineBreak:
   Enabled: true
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
 
 Style/ParenthesesAroundCondition:
   AllowInMultilineConditions: true
@@ -43,6 +45,8 @@ Style/HashEachMethods:
 Style/HashTransformKeys:
   Enabled: true
 Style/HashTransformValues:
+  Enabled: true
+Style/ExponentialNotation:
   Enabled: true
 
 Lint/RaiseException:

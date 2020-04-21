@@ -1,5 +1,5 @@
-Layout/Tab:
-  Enabled: false
+Layout/IndentationStyle:
+  EnforcedStyle: tabs
   IndentationWidth: 2
 Layout/IndentationWidth:
   Width: 1
@@ -7,12 +7,16 @@ Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
 Layout/ArgumentAlignment:
   EnforcedStyle: with_fixed_indentation
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
 
 Style/HashEachMethods:
   Enabled: true
 Style/HashTransformKeys:
   Enabled: true
 Style/HashTransformValues:
+  Enabled: true
+Style/ExponentialNotation:
   Enabled: true
 
 Lint/RaiseException:
