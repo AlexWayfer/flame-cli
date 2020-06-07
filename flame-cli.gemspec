@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
 	s.required_ruby_version = '>= 2.6'
 
 	s.add_runtime_dependency 'clamp', '~> 1.3'
-	s.add_runtime_dependency 'gorilla_patch', '~> 3.0'
+	s.add_runtime_dependency 'gorilla_patch', '~> 4.0'
 
 	s.add_development_dependency 'bundler', '~> 2.1'
 	s.add_development_dependency 'codecov', '~> 0.1'
