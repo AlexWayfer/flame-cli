@@ -1,9 +1,10 @@
-Gemfile.lock
-.ruby-version
-!template/.ruby-version
+/Gemfile.lock
+/.ruby-version
 
-# Gem files
-*.gem
+/node_modules/
+/package-lock.json
+/yarn.lock
 
-# Tests coverage
-coverage/
+/coverage/
+
+/pkg/
