@@ -10,10 +10,7 @@ module Flame
 				parameter 'APP_NAME', 'application name'
 
 				def execute
-					@app_name = app_name
-					@module_name = @app_name.camelize
-					@short_module_name = @module_name
-						.split(/([[:upper:]][[:lower:]]*)/).map! { |s| s[0] }.join
+					initialize_instance_variables
 
 					make_dir do
 						copy_template
@@ -25,6 +22,17 @@ module Flame
 				end
 
 				private
+
+				def initialize_instance_variables
+					@app_name = app_name
+
+					@module_name = @app_name.camelize
+
+					@short_module_name =
+						@module_name.split(/([[:upper:]][[:lower:]]*)/).map! { |s| s[0] }.join
+
+					@domain_name = @module_name.downcase
+				end
 
 				def make_dir(&block)
 					puts "Creating '#{@app_name}' directory..."
@@ -46,7 +54,7 @@ module Flame
 
 				def render_templates
 					puts 'Replace module names in template...'
-					Dir.glob('**/*.erb', File::FNM_DOTMATCH).each do |file|
+					Dir.glob('**/*.erb', File::FNM_DOTMATCH).sort.each do |file|
 						file_pathname = Pathname.new(file)
 						basename_pathname = file_pathname.sub_ext('')
 						puts "- #{basename_pathname}"
@@ -56,9 +64,13 @@ module Flame
 					end
 				end
 
+				PERMISSIONS = {}.freeze
+
 				def grant_permissions
+					return unless PERMISSIONS.any?
+
 					puts 'Grant permissions to files...'
-					File.chmod 0o744, 'server'
+					PERMISSIONS.each { |file, permissions| File.chmod permissions, file }
 				end
 			end
 		end

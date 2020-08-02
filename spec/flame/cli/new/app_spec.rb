@@ -5,7 +5,7 @@ require 'net/http'
 
 describe 'Flame::CLI::New::App' do
 	subject(:execute_command) do
-		Bundler.with_original_env { `#{FLAME_CLI} new app #{app_name}` }
+		Bundler.with_unbundled_env { `#{FLAME_CLI} new app #{app_name}` }
 	end
 
 	let(:app_name) { 'foo_bar' }
@@ -26,21 +26,35 @@ describe 'Flame::CLI::New::App' do
 				'Copy template directories and files...',
 				'Clean directories...',
 				'Replace module names in template...',
-				'- config.ru',
-				'- constants.rb',
+				'- .toys/.toys.rb',
+				'- README.md',
 				'- application.rb',
+				'- config.ru',
+				'- config/base.rb',
+				'- config/database.example.yaml',
+				'- config/full.rb',
+				'- config/mail.example.yaml',
+				'- config/processors/mail.rb',
+				'- config/processors/r18n.rb',
+				'- config/processors/sentry.rb',
+				'- config/processors/server.rb',
+				'- config/processors/sequel.rb',
+				'- config/processors/shrine.rb',
+				'- config/puma.rb',
+				'- config/sentry.example.yaml',
+				'- config/site.example.yaml',
 				'- controllers/_controller.rb',
 				'- controllers/site/_controller.rb',
 				'- controllers/site/index_controller.rb',
+				'- forms/_base.rb',
+				'- mailers/_base.rb',
+				'- mailers/mail/_base.rb',
+				'- mailers/mail/default.rb',
+				'- rollup.config.js',
 				'- routes.rb',
 				'- views/site/index.html.erb',
 				'- views/site/layout.html.erb',
-				'- rollup.config.js',
-				'- config/config.rb',
-				'- config/site.example.yaml',
-				'- config/processors/logger.rb',
-				'- config/processors/sequel.rb.bak',
-				'Grant permissions to files...',
+				# 'Grant permissions to files...',
 				'Done!'
 			]
 		end
@@ -96,51 +110,12 @@ describe 'Flame::CLI::New::App' do
 
 		before { execute_command }
 
-		describe '.toys/config/check.rb' do
+		describe '.toys/.toys.rb' do
 			let(:expected_words) do
 				[
-					'ExampleFile.all(FB::Application.config[:config_dir])'
-				]
-			end
-
-			it { is_expected.to match_words(*expected_words) }
-		end
-
-		describe '.toys/database/.preload.rb' do
-			let(:expected_words) do
-				[
-					'@db_config = FB::Application.config[:database]',
-					'@db_connection = FB::Application.db_connection'
-				]
-			end
-
-			it { is_expected.to match_words(*expected_words) }
-		end
-
-		describe '.toys/generate/form/template.rb.erb' do
-			let(:expected_words) do
-				[
-					'module FooBar'
-				]
-			end
-
-			it { is_expected.to match_words(*expected_words) }
-		end
-
-		describe '.toys/generate/model/template.rb.erb' do
-			let(:expected_words) do
-				[
-					'module FooBar'
-				]
-			end
-
-			it { is_expected.to match_words(*expected_words) }
-		end
-
-		describe '.toys/routes.rb' do
-			let(:expected_words) do
-				[
-					'puts FB::Application.router.routes'
+					'FB::Application',
+					'expand FlameGenerateToys::Template, namespace: FooBar',
+					'FB::Config::Base.new'
 				]
 			end
 
@@ -150,7 +125,10 @@ describe 'Flame::CLI::New::App' do
 		describe 'application.rb' do
 			let(:expected_words) do
 				[
-					'module FooBar'
+					'config = FooBar::Config::Base.new',
+					'FooBar.complete_config config',
+					'module FooBar',
+					'class Application < Flame::Application'
 				]
 			end
 
@@ -162,9 +140,9 @@ describe 'Flame::CLI::New::App' do
 				[
 					'FB::Application.require_dirs FB::APP_DIRS',
 					'if FB::Application.config[:session]',
-					'use Rack::Session::Cookie, ' \
-						'FB::Application.config[:session][:cookie]',
+					'use Rack::Session::Cookie, FB::Application.config[:session][:cookie]',
 					'use Rack::CommonLogger, FB::Application.logger',
+					'FB::App = FB::Application',
 					'run FB::Application'
 				]
 			end
@@ -172,18 +150,73 @@ describe 'Flame::CLI::New::App' do
 			it { is_expected.to match_words(*expected_words) }
 		end
 
-		describe 'config/config.rb' do
+		describe 'config/base.rb' do
 			let(:expected_words) do
 				[
-					'FB::Application.config.instance_exec do',
-					'FB::ConfigProcessors.const_get(processor_name).new self'
+					'module FooBar',
+					'::FB = ::FooBar',
+					'APP_DIRS ='
 				]
 			end
 
 			it { is_expected.to match_words(*expected_words) }
 		end
 
-		describe 'config/processors/logger.rb' do
+		describe 'config/full.rb' do
+			let(:expected_words) do
+				[
+					'module FooBar',
+					'FB::Config::Processors.const_get(processor_name).new config'
+				]
+			end
+
+			it { is_expected.to match_words(*expected_words) }
+		end
+
+		describe 'config/puma.rb' do
+			let(:expected_words) do
+				[
+					'config = FooBar::Config::Base.new'
+				]
+			end
+
+			it { is_expected.to match_words(*expected_words) }
+		end
+
+		describe 'config/database.example.yaml' do
+			let(:expected_words) do
+				[
+					":database: 'foo_bar'",
+					":user: 'foo_bar'"
+				]
+			end
+
+			it { is_expected.to match_words(*expected_words) }
+		end
+
+		describe 'config/mail.example.yaml' do
+			let(:expected_words) do
+				[
+					":name: 'FooBar.com'",
+					":email: 'info@foobar.com'",
+					":user_name: 'info@foobar.com'"
+				]
+			end
+
+			it { is_expected.to match_words(*expected_words) }
+		end
+
+		describe 'config/sentry.example.yaml' do
+			let(:expected_words) do
+				[
+					':host: sentry.foobar.com'
+				]
+			end
+
+			it { is_expected.to match_words(*expected_words) }
+		end
+
+		describe 'config/processors/mail.rb' do
 			let(:expected_words) do
 				[
 					'module FooBar'
@@ -193,25 +226,51 @@ describe 'Flame::CLI::New::App' do
 			it { is_expected.to match_words(*expected_words) }
 		end
 
-		describe 'config/processors/sequel.rb.bak' do
+		describe 'config/processors/r18n.rb' do
 			let(:expected_words) do
 				[
-					'module FooBar',
-					'FB::Application.db_connection.extension extension_name',
-					'FB::Application.db_connection.loggers << FB::Application.logger',
-					"FB::Application.db_connection.freeze unless ENV['RACK_CONSOLE']"
+					'module FooBar'
 				]
 			end
 
 			it { is_expected.to match_words(*expected_words) }
 		end
 
-		describe 'constants.rb' do
+		describe 'config/processors/sentry.rb' do
 			let(:expected_words) do
 				[
 					'module FooBar',
-					'::FB = ::FooBar',
-					'APP_DIRS ='
+					'FB::APP_DIRS'
+				]
+			end
+
+			it { is_expected.to match_words(*expected_words) }
+		end
+
+		describe 'config/processors/server.rb' do
+			let(:expected_words) do
+				[
+					'module FooBar'
+				]
+			end
+
+			it { is_expected.to match_words(*expected_words) }
+		end
+
+		describe 'config/processors/sequel.rb' do
+			let(:expected_words) do
+				[
+					'module FooBar'
+				]
+			end
+
+			it { is_expected.to match_words(*expected_words) }
+		end
+
+		describe 'config/processors/shrine.rb' do
+			let(:expected_words) do
+				[
+					'module FooBar'
 				]
 			end
 
@@ -256,8 +315,7 @@ describe 'Flame::CLI::New::App' do
 				[
 					'# FooBar',
 					'`createuser -U postgres foo_bar`',
-					'`createdb -U postgres foo_bar -O foo_bar`',
-					'`psql -U postgres -c "CREATE EXTENSION citext" foo_bar`',
+					'Run `exe/setup.sh`',
 					'Add UNIX-user for project: `adduser foo_bar`',
 					'Make symbolic link of project directory to `/var/www/foo_bar`'
 				]
@@ -286,10 +344,109 @@ describe 'Flame::CLI::New::App' do
 			it { is_expected.to match_words(*expected_words) }
 		end
 
+		describe 'forms/_base.rb' do
+			let(:expected_words) do
+				[
+					'module FooBar',
+					'FB::Application.db_connection'
+				]
+			end
+
+			it { is_expected.to match_words(*expected_words) }
+		end
+
+		describe 'mailers/_base.rb' do
+			let(:expected_words) do
+				[
+					'module FooBar',
+					'@from = FB::Application.config[:mail][:from]',
+					'@controller = FB::MailController.new',
+					## https://github.com/rubocop-hq/rubocop/issues/8416
+					# rubocop:disable Lint/InterpolationCheck
+					'FB::Application.logger.info "#{mail.log_message} [#{index}/#{count}]..."',
+					'File.join(FB::Application.config[:tmp_dir], "mailing_#{object_id}")'
+					# rubocop:enable Lint/InterpolationCheck
+				]
+			end
+
+			it { is_expected.to match_words(*expected_words) }
+		end
+
+		describe 'mailers/mail/_base.rb' do
+			let(:expected_words) do
+				[
+					'module FooBar',
+					'FB::Application.logger.error e'
+				]
+			end
+
+			it { is_expected.to match_words(*expected_words) }
+		end
+
+		describe 'mailers/mail/default.rb' do
+			let(:expected_words) do
+				[
+					'module FooBar'
+				]
+			end
+
+			it { is_expected.to match_words(*expected_words) }
+		end
+
+		describe 'views/site/errors/400.html.erb' do
+			let(:expected_words) do
+				[
+					'<h1><%= t.error.bad_request.title %></h1>',
+					'<h4><%= t.error.bad_request.subtitle %></h4>',
+					'<%= t.error.bad_request.text %>',
+					'<a href="<%= path_to_back %>">',
+					'<%= t.button.back %>'
+				]
+			end
+
+			it { is_expected.to match_words(*expected_words) }
+		end
+
+		describe 'views/site/errors/404.html.erb' do
+			let(:expected_words) do
+				[
+					'<h1><%= t.error.page.itself.not_found %></h1>',
+					'<a href="<%= path_to GT::Site::IndexController %>">',
+					'<%= t.button.home %>'
+				]
+			end
+
+			it { is_expected.to match_words(*expected_words) }
+		end
+
+		describe 'views/site/errors/500.html.erb' do
+			let(:expected_words) do
+				[
+					'<div class="page error <%= config[:environment] %>">',
+					'<h1><%= t.error.unexpected_error.title %></h1>',
+					'<h4><%= t.error.unexpected_error.subtitle %></h4>',
+					'<%= t.error.unexpected_error.text %>',
+					"<% if config[:environment] == 'development' %>",
+					'<pre><h3><b><%==',
+					'%></b></h3><%',
+					'%><h4 class="sql"><%=',
+					'%></h4><% end %><%=',
+					'%></pre>',
+					'<% end %>',
+					'<a href="<%= path_to_back %>">',
+					'<%= t.button.back %>'
+				]
+			end
+
+			it { is_expected.to match_words(*expected_words) }
+		end
+
 		describe 'views/site/layout.html.erb' do
 			let(:expected_words) do
 				[
-					'<title><%= FB::Application.config[:site][:site_name] %></title>'
+					'<title><%= config[:site][:site_name] %></title>',
+					'<% if Raven.configuration.environments.include?(config[:environment]) &&',
+					"environment: '<%= config[:environment] %>',"
 				]
 			end
 
@@ -299,13 +456,13 @@ describe 'Flame::CLI::New::App' do
 
 	describe 'generates RuboCop-satisfying app' do
 		subject do
-			Bundler.with_original_env do
+			Bundler.with_unbundled_env do
 				system 'bundle exec rubocop'
 			end
 		end
 
 		before do
-			Bundler.with_original_env do
+			Bundler.with_unbundled_env do
 				execute_command
 
 				Dir.chdir app_name
@@ -323,8 +480,8 @@ describe 'Flame::CLI::New::App' do
 
 	describe 'generates working app' do
 		subject do
-			Bundler.with_original_env do
-				pid = spawn './server start'
+			Bundler.with_unbundled_env do
+				pid = spawn 'toys server start'
 
 				Process.detach pid
 
@@ -338,29 +495,35 @@ describe 'Flame::CLI::New::App' do
 					response = Net::HTTP.get URI("http://127.0.0.1:#{port}/")
 				rescue Errno::ECONNREFUSED => e
 					sleep 1
-					retry if number_of_attempts < 10
+					retry if number_of_attempts < 20
 					raise e
 				end
 
 				response
 			ensure
-				Bundler.with_original_env { `./server stop` }
+				Bundler.with_unbundled_env { `toys server stop` }
 				Process.wait pid
 			end
 		end
 
-		before do
-			Bundler.with_original_env do
-				ENV['RACK_ENV'] = 'development'
+		around do |example|
+			## HACK: https://github.com/dazuma/toys/issues/57
+			original_toys_file_name = "#{__dir__}/../../../../.toys.rb"
+			File.rename original_toys_file_name, "#{original_toys_file_name}.bak"
 
+			example.run
+
+			File.rename "#{original_toys_file_name}.bak", original_toys_file_name
+		end
+
+		before do
+			Bundler.with_unbundled_env do
 				execute_command
 
 				Dir.chdir app_name
 
-				%w[server session site].each do |config|
-					FileUtils.cp(
-						"config/#{config}.example.yaml", "config/#{config}.yaml"
-					)
+				Dir['config/*.example.yaml'].each do |config_example_file_name|
+					FileUtils.cp config_example_file_name, config_example_file_name.sub('.example', '')
 				end
 
 				## HACK for testing while some server is running
@@ -369,7 +532,7 @@ describe 'Flame::CLI::New::App' do
 					File.read('config/server.yaml').sub('port: 3000', "port: #{port}")
 				)
 
-				system 'bundle install'
+				system 'exe/setup.sh'
 			end
 		end
 
@@ -386,38 +549,13 @@ describe 'Flame::CLI::New::App' do
 			result
 		end
 
-		let(:expected_response) do
-			<<~RESPONSE
-				<!DOCTYPE html>
-				<html>
-					<head>
-						<meta charset="utf-8" />
-						<title>FooBar</title>
-					</head>
-					<body>
-						<h1>Hello, world!</h1>
-
-					</body>
-				</html>
-			RESPONSE
+		let(:expected_response_lines) do
+			[
+				'<title>FooBar</title>',
+				'<h1>Hello, world!</h1>'
+			]
 		end
 
-		it { is_expected.to eq expected_response }
-	end
-
-	describe 'grants `./server` file execution permissions' do
-		subject { File.stat('server').mode.to_s(8)[3..5] }
-
-		before do
-			execute_command
-
-			Dir.chdir app_name
-		end
-
-		after do
-			Dir.chdir '..'
-		end
-
-		it { is_expected.to eq '744' }
+		it { is_expected.to include(*expected_response_lines) }
 	end
 end

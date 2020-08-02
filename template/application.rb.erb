@@ -1,5 +1,36 @@
 # frozen_string_literal: true
 
+require_relative 'config/base'
+config = <%= @module_name %>::Config::Base.new
+
+## Require gems
+require 'bundler/setup'
+Bundler.require(
+	:system, :server, :database,
+	:translations, :forms, :views, :assets, :mails, :others,
+	config[:environment]
+)
+
+require 'erubi/capture_end'
+require 'voight_kampff/rack_request'
+
+## Require libs
+
+### For $RS constant:
+### http://ruby-doc.org/stdlib/libdoc/English/rdoc/English.html
+require 'English'
+
+require 'logger'
+
+### For PP.pp (differs from `pp` by arguments (width))
+require 'pp'
+
+# require 'money/bank/google_currency'
+
+## Load full application config, with dependencies from Bundler
+require_relative 'config/full'
+<%= @module_name %>.complete_config config
+
 module <%= @module_name %>
 	## Class for application
 	class Application < Flame::Application
@@ -8,30 +39,40 @@ module <%= @module_name %>
 
 			memoize def logger
 				::Logger.new(
-					if (config[:environment] == 'development') ||
-							ENV['RACK_CONSOLE'] ||
-							(File.basename($PROGRAM_NAME) == 'toys')
-						$stdout
-					else
-						File.join(config[:logs_dir], 'stdout.log')
-					end
+					development_or_toys ? $stdout : File.join(config[:stdout_file])
 				)
 			end
 
 			def db_connection
-				::Sequel.connect config[:database]
-			rescue Sequel::DatabaseConnectionError => e
-				logger.error e.full_message
-				nil
+				connection = ::Sequel.connect config[:database]
+
+				Config::Processors::Sequel::EXTENSIONS.each do |extension_name|
+					connection.extension extension_name
+				end
+
+				connection.loggers << logger if development_or_toys
+
+				## Freeze DB (not for `toys console`)
+				connection.freeze unless ENV['RACK_CONSOLE']
+
+				connection
 			end
 			memoize :db_connection
 
-			# memoize def shrine_uploaders
-			# 	{
-			# 		image: Class.new(::Shrine),
-			# 		document: Class.new(::Shrine)
-			# 	}
-			# end
+			memoize def shrine_uploaders
+				{
+					# image: Class.new(::Shrine),
+					# document: Class.new(::Shrine)
+				}
+			end
+
+			private
+
+			memoize def development_or_toys
+				(config[:environment] == 'development') || (File.basename($PROGRAM_NAME) == 'toys')
+			end
 		end
 	end
 end
+
+<%= @short_module_name %>::Application.config = config

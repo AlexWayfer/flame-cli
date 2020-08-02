@@ -1,0 +1,13 @@
+extends: '../../.eslintrc.yaml'
+env:
+  es6: true
+parserOptions:
+  sourceType: module
+# globals:
+  ## Libs:
+  # google: true
+  # Cccombo: true
+
+rules:
+  no-var:
+    - error

@@ -2,22 +2,21 @@
 
 . `dirname "$0"`/../_common.sh
 
-if [ ! -f ".node-version" ]
-then
-	echo "File .node-version not found."
-	exit 0
-fi
-
-if [ "$(cat .node-version)" != "$(node -v | tr -d 'v')" ]
+if [ ! -f ".node-version" ] || [ "$(cat .node-version)" != "$(node -v | tr -d 'v')" ]
 then
 	exe git -C ~/.nodenv/plugins/node-build pull
-	exe nodenv install -s
+
+	if [ ! -f ".node-version" ]
+	then
+		echo "File '.node-version' not found. Installing last stable version..."
+		latest_version=$(nodenv install -l | grep '^[[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\+$' | tail -1)
+		exe nodenv install -s $latest_version
+		exe nodenv local $latest_version
+	else
+		exe nodenv install -s
+	fi
 fi
 
-## Please, install Yarn manually: https://classic.yarnpkg.com/en/docs/install
+exe npm install
 
-if ! yarn check
-then exe yarn install
-fi
-
-exe yarn build
+exe npm run build

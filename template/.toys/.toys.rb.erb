@@ -1,0 +1,72 @@
+# frozen_string_literal: true
+
+include :bundler, static: true
+
+config_dir = "#{__dir__}/../config"
+
+require "#{config_dir}/base"
+
+require 'benchmark_toys'
+expand BenchmarkToys::Template
+alias_tool :b, :benchmark
+
+application_proc = proc do
+	require_relative '../application'
+	<%= @short_module_name %>::Application
+end
+
+require 'config_toys'
+expand ConfigToys::Template, config_dir: config_dir
+
+db_connection_proc = proc do
+	application_proc.call.db_connection
+end
+
+require 'sequel_migrations_toys'
+expand SequelMigrationsToys::Template, db_connection_proc: db_connection_proc
+
+require 'psql_toys'
+expand PSQLToys::Template,
+	db_config_proc: (proc do
+		## For full config, not base
+		application_proc.call.config[:database]
+	end),
+	db_connection_proc: db_connection_proc,
+	db_extensions: %w[citext pgcrypto].freeze
+
+alias_tool :db, :database
+
+require 'flame_deploy_toys'
+expand FlameDeployToys::Template, config_dir: config_dir
+
+require 'flame_generate_toys'
+expand FlameGenerateToys::Template, namespace: <%= @module_name %>
+
+require 'flame_routes_toys'
+expand FlameRoutesToys::Template, application_proc: application_proc
+
+require 'flame_server_toys'
+expand FlameServerToys::Template,
+	config_proc: (proc do
+		<%= @short_module_name %>::Config::Base.new
+	end)
+
+require 'locales_toys'
+expand LocalesToys::Template
+
+# tool :locales do
+# 	require 'crowdin_toys'
+# 	expand CrowdinToys::Template
+# end
+
+require 'rack_console_toys'
+expand RackConsoleToys::Template
+
+require 'static_files_toys'
+expand StaticFilesToys::Template
+
+tool :rubocop do
+	def run
+		exec 'rubocop'
+	end
+end
