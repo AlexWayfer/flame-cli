@@ -8,7 +8,7 @@
       :host: '0.0.0.0'
       :port: 3000
     # :unix: 'tmp/sockets/puma.sock'
-  :daemonize: false
+  :output: :stdout # can be `:file`
   # :workers_count: 1
   # :threads_count: 4
 
@@ -19,7 +19,7 @@ development: &development
 
 test: &test
   <<: *default
-  :daemonize: false
+  :output: :stdout
 
 production: &production
   <<: *default

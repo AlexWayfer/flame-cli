@@ -1,14 +1,9 @@
 # frozen_string_literal: true
 
-require_relative 'config/base'
-config = <%= @module_name %>::Config::Base.new
-
 ## Require gems
 require 'bundler/setup'
 Bundler.require(
-	:system, :server, :database,
-	:translations, :forms, :views, :assets, :mails, :others,
-	config[:environment]
+	:system, :server, :database, :translations, :forms, :views, :assets, :mails, :others
 )
 
 require 'erubi/capture_end'
@@ -27,9 +22,7 @@ require 'pp'
 
 # require 'money/bank/google_currency'
 
-## Load full application config, with dependencies from Bundler
-require_relative 'config/full'
-<%= @module_name %>.complete_config config
+require_relative 'constants'
 
 module <%= @module_name %>
 	## Class for application
@@ -74,5 +67,3 @@ module <%= @module_name %>
 		end
 	end
 end
-
-<%= @short_module_name %>::Application.config = config

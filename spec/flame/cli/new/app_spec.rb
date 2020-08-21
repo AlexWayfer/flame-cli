@@ -14,9 +14,10 @@ describe 'Flame::CLI::New::App' do
 	let(:template_dir) { "#{root_dir}/template" }
 	let(:template_dir_pathname) { Pathname.new(template_dir) }
 	let(:template_ext) { '.erb' }
+	let(:temp_app_dir) { "#{root_dir}/#{app_name}" }
 
 	after do
-		FileUtils.rm_r "#{root_dir}/#{app_name}"
+		FileUtils.rm_r temp_app_dir
 	end
 
 	describe 'output' do
@@ -30,10 +31,9 @@ describe 'Flame::CLI::New::App' do
 				'- README.md',
 				'- application.rb',
 				'- config.ru',
-				'- config/base.rb',
 				'- config/database.example.yaml',
-				'- config/full.rb',
 				'- config/mail.example.yaml',
+				'- config/main.rb',
 				'- config/processors/mail.rb',
 				'- config/processors/r18n.rb',
 				'- config/processors/sentry.rb',
@@ -43,6 +43,7 @@ describe 'Flame::CLI::New::App' do
 				'- config/puma.rb',
 				'- config/sentry.example.yaml',
 				'- config/site.example.yaml',
+				'- constants.rb',
 				'- controllers/_controller.rb',
 				'- controllers/site/_controller.rb',
 				'- controllers/site/index_controller.rb',
@@ -52,6 +53,9 @@ describe 'Flame::CLI::New::App' do
 				'- mailers/mail/default.rb',
 				'- rollup.config.js',
 				'- routes.rb',
+				'- views/site/errors/400.html.erb',
+				'- views/site/errors/404.html.erb',
+				'- views/site/errors/500.html.erb',
 				'- views/site/index.html.erb',
 				'- views/site/layout.html.erb',
 				# 'Grant permissions to files...',
@@ -96,7 +100,7 @@ describe 'Flame::CLI::New::App' do
 	end
 
 	describe 'cleans directories' do
-		subject { Dir.glob("#{app_name}/**/.keep", File::FNM_DOTMATCH) }
+		subject { Dir.glob("#{temp_app_dir}/**/.keep", File::FNM_DOTMATCH) }
 
 		before { execute_command }
 
@@ -114,8 +118,7 @@ describe 'Flame::CLI::New::App' do
 			let(:expected_words) do
 				[
 					'FB::Application',
-					'expand FlameGenerateToys::Template, namespace: FooBar',
-					'FB::Config::Base.new'
+					'expand FlameGenerateToys::Template, namespace: FooBar'
 				]
 			end
 
@@ -125,10 +128,7 @@ describe 'Flame::CLI::New::App' do
 		describe 'application.rb' do
 			let(:expected_words) do
 				[
-					'config = FooBar::Config::Base.new',
-					'FooBar.complete_config config',
-					'module FooBar',
-					'class Application < Flame::Application'
+					'module FooBar'
 				]
 			end
 
@@ -150,23 +150,11 @@ describe 'Flame::CLI::New::App' do
 			it { is_expected.to match_words(*expected_words) }
 		end
 
-		describe 'config/base.rb' do
+		describe 'config/main.rb' do
 			let(:expected_words) do
 				[
-					'module FooBar',
-					'::FB = ::FooBar',
-					'APP_DIRS ='
-				]
-			end
-
-			it { is_expected.to match_words(*expected_words) }
-		end
-
-		describe 'config/full.rb' do
-			let(:expected_words) do
-				[
-					'module FooBar',
-					'FB::Config::Processors.const_get(processor_name).new config'
+					'config = FB::Application.config',
+					'FB::Config::Processors.const_get(processor_name).new self'
 				]
 			end
 
@@ -176,7 +164,7 @@ describe 'Flame::CLI::New::App' do
 		describe 'config/puma.rb' do
 			let(:expected_words) do
 				[
-					'config = FooBar::Config::Base.new'
+					'config = FB::Application.config'
 				]
 			end
 
@@ -271,6 +259,17 @@ describe 'Flame::CLI::New::App' do
 			let(:expected_words) do
 				[
 					'module FooBar'
+				]
+			end
+
+			it { is_expected.to match_words(*expected_words) }
+		end
+
+		describe 'constants.rb' do
+			let(:expected_words) do
+				[
+					'module FooBar',
+					'::FB = ::FooBar'
 				]
 			end
 
@@ -506,19 +505,17 @@ describe 'Flame::CLI::New::App' do
 			end
 		end
 
-		around do |example|
-			## HACK: https://github.com/dazuma/toys/issues/57
-			original_toys_file_name = "#{__dir__}/../../../../.toys.rb"
-			File.rename original_toys_file_name, "#{original_toys_file_name}.bak"
-
-			example.run
-
-			File.rename "#{original_toys_file_name}.bak", original_toys_file_name
-		end
-
 		before do
 			Bundler.with_unbundled_env do
 				execute_command
+
+				## HACK: https://github.com/dazuma/toys/issues/57
+				toys_command = 'truncate_load_path!'
+				temp_app_toys_file_path = "#{temp_app_dir}/.toys/.toys.rb"
+				File.write(
+					temp_app_toys_file_path,
+					File.read(temp_app_toys_file_path).sub("# #{toys_command}", toys_command)
+				)
 
 				Dir.chdir app_name
 

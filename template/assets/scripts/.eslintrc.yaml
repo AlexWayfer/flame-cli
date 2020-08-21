@@ -7,7 +7,3 @@ parserOptions:
   ## Libs:
   # google: true
   # Cccombo: true
-
-rules:
-  no-var:
-    - error

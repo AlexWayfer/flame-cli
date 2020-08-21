@@ -23,7 +23,7 @@ rules:
     - avoidEscape: true
   semi:
     - error
-    - always
+    - never
   no-multi-spaces:
     - error
   keyword-spacing:
@@ -61,6 +61,8 @@ rules:
     - allow:
       - error
       - warn
+  no-var:
+    - error
   arrow-body-style:
     - warn
   arrow-parens:

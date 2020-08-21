@@ -9,7 +9,7 @@ rules:
     - tab
 
   max-line-length:
-    - 80
+    - 100
     - ignorePattern: /// https?:///
 
   at-rule-no-unknown:

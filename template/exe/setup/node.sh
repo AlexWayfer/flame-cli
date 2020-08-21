@@ -17,6 +17,10 @@ then
 	fi
 fi
 
-exe npm install
+exe npm install -g pnpm
 
-exe npm run build
+exe nodenv rehash
+
+exe pnpm install
+
+exe pnpm run build

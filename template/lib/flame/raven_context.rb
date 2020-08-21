@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'flame/raven_context'
+## Required via `Bundler.require` in `application.rb`
+# require 'flame/raven_context'
 
 module Flame
 	## Redefine `user` object

@@ -10,7 +10,7 @@ module <%= @module_name %>
 
 			## Base class for generating emails
 			class Base
-				def initialize(from:, to:, subject:, body:); end
+				# def initialize(from:, to:, subject:, body:); end
 
 				def send!
 					Retries.run(
