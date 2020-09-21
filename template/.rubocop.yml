@@ -38,3 +38,7 @@ Metrics/BlockLength:
   Exclude:
     - Rakefile
     - db/migrations/*
+
+RSpec/DescribeClass:
+  Exclude:
+    - spec/integration/**/*

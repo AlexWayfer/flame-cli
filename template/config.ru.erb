@@ -3,9 +3,6 @@
 ## Require application
 require_relative 'application'
 
-## Require dirs
-<%= @short_module_name %>::Application.require_dirs <%= @short_module_name %>::APP_DIRS, ignore: [%r{config/puma.rb}, %r{lib/\w+/spec/}]
-
 ## Require routes
 require_relative 'routes'
 
