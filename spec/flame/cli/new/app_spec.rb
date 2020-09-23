@@ -5,7 +5,7 @@ require 'net/http'
 
 describe 'Flame::CLI::New::App' do
 	subject(:execute_command) do
-		Bundler.with_unbundled_env { `#{FLAME_CLI} new app #{app_name}` }
+		`#{FLAME_CLI} new app #{app_name}`
 	end
 
 	let(:app_name) { 'foo_bar' }
@@ -455,19 +455,15 @@ describe 'Flame::CLI::New::App' do
 
 	describe 'generates RuboCop-satisfying app' do
 		subject do
-			Bundler.with_unbundled_env do
-				system 'bundle exec rubocop'
-			end
+			system 'bundle exec rubocop'
 		end
 
 		before do
-			Bundler.with_unbundled_env do
-				execute_command
+			execute_command
 
-				Dir.chdir app_name
+			Dir.chdir app_name
 
-				system 'bundle install'
-			end
+			system 'exe/setup/ruby.sh'
 		end
 
 		after do
