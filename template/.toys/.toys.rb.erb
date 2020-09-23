@@ -14,7 +14,7 @@ expand BenchmarkToys::Template
 alias_tool :b, :benchmark
 
 application_proc = proc do
-	require "#{config_dir}/main"
+	require "#{root_dir}/application"
 	<%= @short_module_name %>::Application
 end
 

@@ -64,7 +64,7 @@
 				# 	svgxuse.min
 				# 	cccombo
 				# ],
-				'application/compiled': %w[application]
+				'compiled': %w[main]
 			}
 				.each do |dir, file_names|
 		<%= "%\>" %>
@@ -76,6 +76,28 @@
 		<%= "<\% end %\>" %>
 	</head>
 	<body>
-		<%= "<\%= yield %\>" %>
+		<header>
+			<a href="<%= "<\%= path_to #{@short_module_name}::Site::IndexController %\>" %>">
+				<h1><%= "<\%= config[:site][:site_name] %\>" %></h1>
+			</a>
+		</header>
+
+		<main>
+			<!--
+			<%= "<\%#" %>
+				%i[error warning notice].each do |type|
+					flash[type].each do |text|
+			<%= "%\>" %>
+						<div class="flash <%= "<\%#= type %\>" %>">
+							<%= "<\%#= text %\>" %>
+						</div>
+			<%= "<\%#" %>
+					end
+				end
+			<%= "%\>" %>
+			-->
+
+			<%= "<\%= yield %\>" %>
+		</main>
 	</body>
 </html>

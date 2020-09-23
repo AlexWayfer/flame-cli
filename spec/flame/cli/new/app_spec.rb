@@ -52,7 +52,6 @@ describe 'Flame::CLI::New::App' do
 				'- mailers/mail/_base.rb',
 				'- mailers/mail/default.rb',
 				'- rollup.config.js',
-				'- routes.rb',
 				'- views/site/errors/400.html.erb',
 				'- views/site/errors/404.html.erb',
 				'- views/site/errors/500.html.erb',
@@ -138,7 +137,7 @@ describe 'Flame::CLI::New::App' do
 		describe 'config.ru' do
 			let(:expected_words) do
 				[
-					'FB::Application.require_dirs FB::APP_DIRS',
+					'FB::Application.setup',
 					'if FB::Application.config[:session]',
 					'use Rack::Session::Cookie, FB::Application.config[:session][:cookie]',
 					'use Rack::CommonLogger, FB::Application.logger',
@@ -301,8 +300,7 @@ describe 'Flame::CLI::New::App' do
 		describe 'controllers/site/index_controller.rb' do
 			let(:expected_words) do
 				[
-					'module FooBar',
-					'class IndexController < FB::Site::Controller'
+					'module FooBar'
 				]
 			end
 
@@ -327,16 +325,6 @@ describe 'Flame::CLI::New::App' do
 			let(:expected_words) do
 				[
 					"name: 'FB'"
-				]
-			end
-
-			it { is_expected.to match_words(*expected_words) }
-		end
-
-		describe 'routes.rb' do
-			let(:expected_words) do
-				[
-					'FB::Application.class_exec do'
 				]
 			end
 
@@ -445,7 +433,8 @@ describe 'Flame::CLI::New::App' do
 				[
 					'<title><%= config[:site][:site_name] %></title>',
 					'<% if Raven.configuration.environments.include?(config[:environment]) &&',
-					"environment: '<%= config[:environment] %>',"
+					"environment: '<%= config[:environment] %>',",
+					'<a href="<%= path_to FB::Site::IndexController %>">'
 				]
 			end
 

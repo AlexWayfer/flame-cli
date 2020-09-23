@@ -3,7 +3,7 @@
 module <%= @module_name %>
 	module Site
 		## Index controller for example
-		class IndexController < <%= @short_module_name %>::Site::Controller
+		class IndexController < Site::Controller
 			def index
 				view
 			end
