@@ -203,6 +203,16 @@ describe 'Flame::CLI::New::App' do
 			it { is_expected.to match_words(*expected_words) }
 		end
 
+		describe 'config/server.example.yaml' do
+			let(:expected_words) do
+				[
+					":unix: '/run/foo_bar/puma.sock'"
+				]
+			end
+
+			it { is_expected.to match_words(*expected_words) }
+		end
+
 		describe 'config/processors/mail.rb' do
 			let(:expected_words) do
 				[
