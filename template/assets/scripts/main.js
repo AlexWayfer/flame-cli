@@ -73,4 +73,15 @@ document.addEventListener('DOMContentLoaded', () => {
 			form.appendChild(input)
 		})
 	})
+
+	// Custom confirmations on forms submitting
+	document.querySelectorAll('form[data-confirm]').forEach(form => {
+		form.addEventListener('submit', event => {
+			const result = confirm(form.dataset.confirm)
+			if (!result) {
+				form.submitting = false
+				event.preventDefault()
+			}
+		})
+	})
 })
