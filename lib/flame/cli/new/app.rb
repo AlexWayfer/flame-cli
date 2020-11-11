@@ -9,6 +9,8 @@ module Flame
 
 				parameter 'APP_NAME', 'application name'
 
+				option ['-d', '--domain'], 'NAME', 'domain name for configuration'
+
 				def execute
 					initialize_instance_variables
 
@@ -31,7 +33,7 @@ module Flame
 					@short_module_name =
 						@module_name.split(/([[:upper:]][[:lower:]]*)/).map! { |s| s[0] }.join
 
-					@domain_name = @module_name.downcase
+					@domain_name = domain || "#{@module_name.downcase}.com"
 				end
 
 				def make_dir(&block)
