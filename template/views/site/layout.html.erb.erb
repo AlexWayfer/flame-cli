@@ -7,7 +7,7 @@
 		<title><%= "<\%= config[:site][:site_name] %\>" %></title>
 
 		<%= "<\%" %>
-			%i[
+			%w[
 				main
 			].each do |name|
 		<%= "%\>" %>
@@ -58,12 +58,11 @@
 
 		<%= "<\%" %>
 			{
-				libs: %w[],
-				# 	dom4.max
-				# 	modernizr-custom
-				# 	svgxuse.min
-				# 	cccombo
-				# ],
+				lib: %w[],
+				# dom4.max
+				# modernizr-custom
+				# svgxuse.min
+				# cccombo
 				'compiled': %w[main]
 			}
 				.each do |dir, file_names|
