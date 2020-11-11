@@ -472,6 +472,26 @@ describe 'Flame::CLI::New::App' do
 		it { is_expected.to be true }
 	end
 
+	describe 'generates assets linting satisfying app' do
+		subject do
+			system 'pnpm lint'
+		end
+
+		before do
+			execute_command
+
+			Dir.chdir app_name
+
+			system 'exe/setup/node.sh'
+		end
+
+		after do
+			Dir.chdir '..'
+		end
+
+		it { is_expected.to be true }
+	end
+
 	describe 'generates working app' do
 		subject do
 			Bundler.with_unbundled_env do
