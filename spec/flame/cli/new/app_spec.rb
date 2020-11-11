@@ -398,7 +398,7 @@ describe 'Flame::CLI::New::App' do
 			let(:expected_words) do
 				[
 					'<h1><%= t.error.page.itself.not_found %></h1>',
-					'<a href="<%= path_to GT::Site::IndexController %>">',
+					'<a href="<%= path_to FB::Site::IndexController %>">',
 					'<%= t.button.home %>'
 				]
 			end
