@@ -268,7 +268,7 @@ describe 'Flame::CLI::New::App' do
 			let(:expected_words) do
 				[
 					'module FooBar',
-					'::FB = ::FooBar'
+					'::FB = self'
 				]
 			end
 
