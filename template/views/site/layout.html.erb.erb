@@ -4,17 +4,17 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-		<title><%= "<\%= config[:site][:site_name] %\>" %></title>
+		<title><%%= config[:site][:site_name] %></title>
 
-		<%= "<\%" %>
+		<%%
 			%w[
 				main
 			].each do |name|
-		<%= "%\>" %>
-			<link rel="stylesheet" href="<%= "<\%= url_to \"styles/\#{name}.css\", version: true %\>" %>" />
-		<%= "<\% end %\>" %>
+		%>
+			<link rel="stylesheet" href="<%%= url_to "styles/#{name}.css", version: true %>" />
+		<%% end %>
 
-		<%= "<\% if Raven.configuration.environments.include?(config[:environment]) && !request.bot? %\>" %>
+		<%% if Raven.configuration.environments.include?(config[:environment]) && !request.bot? %>
 			<script src="https://cdn.ravenjs.com/3.27.0/raven.min.js" crossorigin="anonymous"></script>
 
 			<script type="text/javascript">
@@ -38,9 +38,9 @@
 						'gCrWeb'
 					].join('|'), 'i');
 
-				Raven.config('<%= "<\%= config[:sentry]['front-end'][:url] %\>" %>', {
-					environment: '<%= "<\%= config[:environment] %\>" %>',
-					release: '<%= "<\%= Raven.configuration.release %\>" %>',
+				Raven.config('<%%= config[:sentry]['front-end'][:url] %>', {
+					environment: '<%%= config[:environment] %>',
+					release: '<%%= Raven.configuration.release %>',
 					shouldSendCallback: function (data) {
 						return !data.exception || data.exception.values.some(
 							function (exception) {
@@ -54,9 +54,9 @@
 					}
 				}).install();
 			</script>
-		<%= "<\% end %\>" %>
+		<%% end %>
 
-		<%= "<\%" %>
+		<%%
 			{
 				lib: %w[],
 				# dom4.max
@@ -66,37 +66,37 @@
 				'compiled': %w[main]
 			}
 				.each do |dir, file_names|
-		<%= "%\>" %>
-			<%= "<\% file_names.each do |name| %\>" %>
+		%>
+			<%% file_names.each do |name| %>
 				<script
-					type="text/javascript" src="<%= "<\%= url_to \"/scripts/\#{dir}/\#{name}.js\", version: true %\>" %>"
+					type="text/javascript" src="<%%= url_to "/scripts/#{dir}/#{name}.js", version: true %>"
 				></script>
-			<%= "<\% end %\>" %>
-		<%= "<\% end %\>" %>
+			<%% end %>
+		<%% end %>
 	</head>
 	<body>
 		<header>
-			<a href="<%= "<\%= path_to #{@short_module_name}::Site::IndexController %\>" %>">
-				<h1><%= "<\%= config[:site][:site_name] %\>" %></h1>
+			<a href="<%%= path_to <%= @short_module_name %>::Site::IndexController %>">
+				<h1><%%= config[:site][:site_name] %></h1>
 			</a>
 		</header>
 
 		<main>
 			<!--
-			<%= "<\%#" %>
+			<%%#
 				%i[error warning notice].each do |type|
 					flash[type].each do |text|
-			<%= "%\>" %>
-						<div class="flash <%= "<\%#= type %\>" %>">
-							<%= "<\%#= text %\>" %>
+			%>
+						<div class="flash <%%#= type %>">
+							<%%#= text %>
 						</div>
-			<%= "<\%#" %>
+			<%%#
 					end
 				end
-			<%= "%\>" %>
+			%>
 			-->
 
-			<%= "<\%= yield %\>" %>
+			<%%= yield %>
 		</main>
 	</body>
 </html>

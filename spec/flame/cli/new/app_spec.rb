@@ -440,12 +440,18 @@ describe 'Flame::CLI::New::App' do
 
 		describe 'views/site/layout.html.erb' do
 			let(:expected_words) do
+				## https://github.com/rubocop-hq/rubocop/issues/8416
+				# rubocop:disable Lint/InterpolationCheck
 				[
 					'<title><%= config[:site][:site_name] %></title>',
+					'<link rel="stylesheet" href="<%= url_to "styles/#{name}.css", version: true %>" />',
 					'<% if Raven.configuration.environments.include?(config[:environment]) &&',
 					"environment: '<%= config[:environment] %>',",
-					'<a href="<%= path_to FB::Site::IndexController %>">'
+					'src="<%= url_to "/scripts/#{dir}/#{name}.js", version: true %>"',
+					'<a href="<%= path_to FB::Site::IndexController %>">',
+					'<h1><%= config[:site][:site_name] %></h1>'
 				]
+				# rubocop:enable Lint/InterpolationCheck
 			end
 
 			it { is_expected.to match_words(*expected_words) }
