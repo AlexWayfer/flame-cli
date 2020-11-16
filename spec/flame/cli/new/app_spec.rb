@@ -540,7 +540,7 @@ describe 'Flame::CLI::New::App' do
 
 				Dir.chdir app_name
 
-				Dir['config/*.example.yaml'].each do |config_example_file_name|
+				Dir['config/**/*.example.{yaml,conf}'].each do |config_example_file_name|
 					FileUtils.cp config_example_file_name, config_example_file_name.sub('.example', '')
 				end
 
