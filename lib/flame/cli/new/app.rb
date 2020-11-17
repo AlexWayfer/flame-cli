@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'date'
+
 module Flame
 	class CLI < Clamp::Command
 		class New < Clamp::Command
