@@ -468,7 +468,9 @@ describe 'Flame::CLI::New::App' do
 
 			Dir.chdir app_name
 
-			system 'exe/setup/ruby.sh'
+			Bundler.with_unbundled_env do
+				system 'exe/setup/ruby.sh'
+			end
 		end
 
 		after do
