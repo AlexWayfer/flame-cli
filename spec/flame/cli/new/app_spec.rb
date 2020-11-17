@@ -500,6 +500,28 @@ describe 'Flame::CLI::New::App' do
 		it { is_expected.to be true }
 	end
 
+	describe 'generates Bundler Audit satisfying app' do
+		subject do
+			system 'bundle audit check --update'
+		end
+
+		before do
+			execute_command
+
+			Dir.chdir app_name
+
+			Bundler.with_unbundled_env do
+				system 'exe/setup/ruby.sh'
+			end
+		end
+
+		after do
+			Dir.chdir '..'
+		end
+
+		it { is_expected.to be true }
+	end
+
 	describe 'generates working app' do
 		subject do
 			Bundler.with_unbundled_env do
