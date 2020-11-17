@@ -4,7 +4,6 @@ source 'https://rubygems.org'
 
 group :system do
 	gem 'bundler'
-	gem 'bundler-audit'
 	gem 'gorilla_patch'
 	# gem 'httpx'
 	gem 'alt_memery'
