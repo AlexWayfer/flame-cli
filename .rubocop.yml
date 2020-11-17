@@ -47,6 +47,8 @@ Metrics/BlockLength:
     - 'spec/**/*'
     - '*.gemspec'
 
+RSpec/NestedGroups:
+  Enabled: false
 RSpec/MultipleMemoizedHelpers:
   Enabled: false
 ## Because of we're testing CLI through native calls
