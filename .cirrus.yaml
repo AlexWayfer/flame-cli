@@ -52,7 +52,7 @@ rspec_task:
     - remark
     - rubocop
   container:
-    image: alpine
+    image: fedora
   rbenv_setup_script:
     - curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-installer | bash
   nodenv_setup_script:
