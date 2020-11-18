@@ -485,6 +485,308 @@ describe 'Flame::CLI::New::App' do
 				it { is_expected.to match_words(*expected_words) }
 			end
 		end
+
+		describe 'with `--project-name` option' do
+			let(:app_name) { 'foobar' }
+			let(:options) { '--project-name=FooBar' }
+
+			describe '.toys/.toys.rb' do
+				let(:expected_words) do
+					[
+						'FB::Application',
+						'expand FlameGenerateToys::Template, namespace: FooBar'
+					]
+				end
+
+				it { is_expected.to match_words(*expected_words) }
+			end
+
+			describe 'application.rb' do
+				let(:expected_words) do
+					[
+						'module FooBar'
+					]
+				end
+
+				it { is_expected.to match_words(*expected_words) }
+			end
+
+			describe 'config.ru' do
+				let(:expected_words) do
+					[
+						'FB::Application.setup',
+						'if FB::Application.config[:session]',
+						'use Rack::Session::Cookie, FB::Application.config[:session][:cookie]',
+						'use Rack::CommonLogger, FB::Application.logger',
+						'FB::App = FB::Application',
+						'run FB::Application'
+					]
+				end
+
+				it { is_expected.to match_words(*expected_words) }
+			end
+
+			describe 'config/main.rb' do
+				let(:expected_words) do
+					[
+						'config = FB::Application.config',
+						'FB::Config::Processors.const_get(processor_name).new self'
+					]
+				end
+
+				it { is_expected.to match_words(*expected_words) }
+			end
+
+			describe 'config/puma.rb' do
+				let(:expected_words) do
+					[
+						'config = FB::Application.config'
+					]
+				end
+
+				it { is_expected.to match_words(*expected_words) }
+			end
+
+			describe 'config/database.example.yaml' do
+				let(:expected_words) do
+					[
+						":database: 'foobar'",
+						":user: 'foobar'"
+					]
+				end
+
+				it { is_expected.to match_words(*expected_words) }
+			end
+
+			describe 'config/mail.example.yaml' do
+				let(:expected_words) do
+					[
+						":name: 'FooBar.com'",
+						":email: 'info@foobar.com'",
+						":user_name: 'info@foobar.com'"
+					]
+				end
+
+				it { is_expected.to match_words(*expected_words) }
+			end
+
+			describe 'config/sentry.example.yaml' do
+				let(:expected_words) do
+					[
+						':host: sentry.foobar.com'
+					]
+				end
+
+				it { is_expected.to match_words(*expected_words) }
+			end
+
+			describe 'config/server.example.yaml' do
+				let(:expected_words) do
+					[
+						":unix: '/run/foobar/puma.sock'"
+					]
+				end
+
+				it { is_expected.to match_words(*expected_words) }
+			end
+
+			describe 'config/processors/mail.rb' do
+				let(:expected_words) do
+					[
+						'module FooBar'
+					]
+				end
+
+				it { is_expected.to match_words(*expected_words) }
+			end
+
+			describe 'config/processors/r18n.rb' do
+				let(:expected_words) do
+					[
+						'module FooBar'
+					]
+				end
+
+				it { is_expected.to match_words(*expected_words) }
+			end
+
+			describe 'config/processors/sentry.rb' do
+				let(:expected_words) do
+					[
+						'module FooBar',
+						'FB::APP_DIRS'
+					]
+				end
+
+				it { is_expected.to match_words(*expected_words) }
+			end
+
+			describe 'config/processors/server.rb' do
+				let(:expected_words) do
+					[
+						'module FooBar'
+					]
+				end
+
+				it { is_expected.to match_words(*expected_words) }
+			end
+
+			describe 'config/processors/sequel.rb' do
+				let(:expected_words) do
+					[
+						'module FooBar'
+					]
+				end
+
+				it { is_expected.to match_words(*expected_words) }
+			end
+
+			describe 'config/processors/shrine.rb' do
+				let(:expected_words) do
+					[
+						'module FooBar'
+					]
+				end
+
+				it { is_expected.to match_words(*expected_words) }
+			end
+
+			describe 'constants.rb' do
+				let(:expected_words) do
+					[
+						'module FooBar',
+						'::FB = self'
+					]
+				end
+
+				it { is_expected.to match_words(*expected_words) }
+			end
+
+			describe 'controllers/_controller.rb' do
+				let(:expected_words) do
+					[
+						'module FooBar',
+						'FB::Application.logger'
+					]
+				end
+
+				it { is_expected.to match_words(*expected_words) }
+			end
+
+			describe 'controllers/site/_controller.rb' do
+				let(:expected_words) do
+					[
+						'module FooBar',
+						'class Controller < FB::Controller'
+					]
+				end
+
+				it { is_expected.to match_words(*expected_words) }
+			end
+
+			describe 'controllers/site/index_controller.rb' do
+				let(:expected_words) do
+					[
+						'module FooBar'
+					]
+				end
+
+				it { is_expected.to match_words(*expected_words) }
+			end
+
+			describe 'README.md' do
+				let(:expected_words) do
+					[
+						'# FooBar',
+						'`createuser -U postgres foobar`',
+						'Run `exe/setup.sh`',
+						'Add UNIX-user for project: `adduser foobar`',
+						'Make symbolic link of project directory to `/var/www/foobar`'
+					]
+				end
+
+				it { is_expected.to match_words(*expected_words) }
+			end
+
+			describe 'rollup.config.js' do
+				let(:expected_words) do
+					[
+						"name: 'FB'"
+					]
+				end
+
+				it { is_expected.to match_words(*expected_words) }
+			end
+
+			describe 'forms/_base.rb' do
+				let(:expected_words) do
+					[
+						'module FooBar',
+						'FB::Application.db_connection'
+					]
+				end
+
+				it { is_expected.to match_words(*expected_words) }
+			end
+
+			describe 'mailers/_base.rb' do
+				let(:expected_words) do
+					[
+						'module FooBar',
+						'@from = FB::Application.config[:mail][:from]',
+						'@controller = FB::MailController.new',
+						## https://github.com/rubocop-hq/rubocop/issues/8416
+						# rubocop:disable Lint/InterpolationCheck
+						'FB::Application.logger.info "#{mail.log_message} [#{index}/#{count}]..."',
+						'File.join(FB::Application.config[:tmp_dir], "mailing_#{object_id}")'
+						# rubocop:enable Lint/InterpolationCheck
+					]
+				end
+
+				it { is_expected.to match_words(*expected_words) }
+			end
+
+			describe 'mailers/mail/_base.rb' do
+				let(:expected_words) do
+					[
+						'module FooBar',
+						'FB::Application.logger.error e'
+					]
+				end
+
+				it { is_expected.to match_words(*expected_words) }
+			end
+
+			describe 'mailers/mail/default.rb' do
+				let(:expected_words) do
+					[
+						'module FooBar'
+					]
+				end
+
+				it { is_expected.to match_words(*expected_words) }
+			end
+
+			describe 'views/site/errors/404.html.erb' do
+				let(:expected_words) do
+					[
+						'<a href="<%= path_to FB::Site::IndexController %>">'
+					]
+				end
+
+				it { is_expected.to match_words(*expected_words) }
+			end
+
+			describe 'views/site/layout.html.erb' do
+				let(:expected_words) do
+					[
+						'<a href="<%= path_to FB::Site::IndexController %>">'
+					]
+				end
+
+				it { is_expected.to match_words(*expected_words) }
+			end
+		end
 	end
 
 	describe 'generates RuboCop-satisfying app' do

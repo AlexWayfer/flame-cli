@@ -12,6 +12,7 @@ module Flame
 				parameter 'APP_NAME', 'application name'
 
 				option ['-d', '--domain'], 'NAME', 'domain name for configuration'
+				option ['-p', '--project-name'], 'NAME', 'project name for code and configuration'
 
 				def execute
 					initialize_instance_variables
@@ -30,7 +31,7 @@ module Flame
 				def initialize_instance_variables
 					@app_name = app_name
 
-					@module_name = @app_name.camelize
+					@module_name = project_name || @app_name.camelize
 
 					@short_module_name =
 						@module_name.split(/([[:upper:]][[:lower:]]*)/).map! { |s| s[0] }.join
