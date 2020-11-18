@@ -789,123 +789,12 @@ describe 'Flame::CLI::New::App' do
 		end
 	end
 
-	describe 'generates RuboCop-satisfying app' do
-		subject do
-			system 'bundle exec rubocop'
-		end
-
-		before do
-			execute_command
-
-			Dir.chdir app_name
-
-			Bundler.with_unbundled_env do
-				system 'exe/setup/ruby.sh'
-			end
-		end
-
-		after do
-			Dir.chdir '..'
-		end
-
-		it { is_expected.to be true }
-	end
-
-	describe 'generates assets linting satisfying app' do
-		subject do
-			system 'pnpm lint'
-		end
-
-		before do
-			execute_command
-
-			Dir.chdir app_name
-
-			system 'exe/setup/node.sh'
-		end
-
-		after do
-			Dir.chdir '..'
-		end
-
-		it { is_expected.to be true }
-	end
-
-	describe 'generates Bundler Audit satisfying app' do
-		subject do
-			system 'bundle audit check --update'
-		end
-
-		before do
-			execute_command
-
-			Dir.chdir app_name
-
-			Bundler.with_unbundled_env do
-				system 'exe/setup/ruby.sh'
-			end
-		end
-
-		after do
-			Dir.chdir '..'
-		end
-
-		it { is_expected.to be true }
-	end
-
-	describe 'generates working app' do
-		subject do
-			Bundler.with_unbundled_env do
-				pid = spawn 'toys server start'
-
-				Process.detach pid
-
-				sleep 0.1
-
-				number_of_attempts = 0
-
-				begin
-					number_of_attempts += 1
-					## https://github.com/gruntjs/grunt-contrib-connect/issues/25#issuecomment-16293494
-					response = Net::HTTP.get URI("http://127.0.0.1:#{port}/")
-				rescue Errno::ECONNREFUSED => e
-					sleep 1
-					retry if number_of_attempts < 20
-					raise e
-				end
-
-				response
-			ensure
-				Bundler.with_unbundled_env { `toys server stop` }
-				Process.wait pid
-			end
-		end
-
+	describe 'generation' do
 		before do
 			Bundler.with_unbundled_env do
 				execute_command
 
-				## HACK: https://github.com/dazuma/toys/issues/57
-				toys_command = 'truncate_load_path!'
-				temp_app_toys_file_path = "#{temp_app_dir}/.toys/.toys.rb"
-				File.write(
-					temp_app_toys_file_path,
-					File.read(temp_app_toys_file_path).sub("# #{toys_command}", toys_command)
-				)
-
 				Dir.chdir app_name
-
-				Dir['config/**/*.example.{yaml,conf}'].each do |config_example_file_name|
-					FileUtils.cp config_example_file_name, config_example_file_name.sub('.example', '')
-				end
-
-				## HACK for testing while some server is running
-				File.write(
-					'config/server.yaml',
-					File.read('config/server.yaml').sub('port: 3000', "port: #{port}")
-				)
-
-				system 'exe/setup.sh'
 			end
 		end
 
@@ -913,22 +802,117 @@ describe 'Flame::CLI::New::App' do
 			Dir.chdir '..'
 		end
 
-		let(:port) do
-			## https://stackoverflow.com/a/5985984/2630849
-			socket = Socket.new(:INET, :STREAM, 0)
-			socket.bind Addrinfo.tcp('127.0.0.1', 0)
-			result = socket.local_address.ip_port
-			socket.close
-			result
+		describe 'RuboCop-satisfying app' do
+			subject do
+				system 'bundle exec rubocop'
+			end
+
+			before do
+				Bundler.with_unbundled_env do
+					system 'exe/setup/ruby.sh'
+				end
+			end
+
+			it { is_expected.to be true }
 		end
 
-		let(:expected_response_lines) do
-			[
-				'<title>FooBar</title>',
-				'<h1>Hello, world!</h1>'
-			]
+		describe 'assets linting satisfying app' do
+			subject do
+				system 'pnpm lint'
+			end
+
+			before do
+				Bundler.with_unbundled_env do
+					system 'exe/setup/node.sh'
+				end
+			end
+
+			it { is_expected.to be true }
 		end
 
-		it { is_expected.to include(*expected_response_lines) }
+		describe 'Bundler Audit satisfying app' do
+			subject do
+				system 'bundle audit check --update'
+			end
+
+			before do
+				Bundler.with_unbundled_env do
+					system 'exe/setup/ruby.sh'
+				end
+			end
+
+			it { is_expected.to be true }
+		end
+
+		describe 'working app' do
+			subject do
+				Bundler.with_unbundled_env do
+					pid = spawn 'toys server start'
+
+					Process.detach pid
+
+					sleep 0.1
+
+					number_of_attempts = 0
+
+					begin
+						number_of_attempts += 1
+						## https://github.com/gruntjs/grunt-contrib-connect/issues/25#issuecomment-16293494
+						response = Net::HTTP.get URI("http://127.0.0.1:#{port}/")
+					rescue Errno::ECONNREFUSED => e
+						sleep 1
+						retry if number_of_attempts < 20
+						raise e
+					end
+
+					response
+				ensure
+					Bundler.with_unbundled_env { `toys server stop` }
+					Process.wait pid
+				end
+			end
+
+			before do
+				Bundler.with_unbundled_env do
+					## HACK: https://github.com/dazuma/toys/issues/57
+					toys_command = 'truncate_load_path!'
+					temp_app_toys_file_path = "#{temp_app_dir}/.toys/.toys.rb"
+					File.write(
+						temp_app_toys_file_path,
+						File.read(temp_app_toys_file_path).sub("# #{toys_command}", toys_command)
+					)
+
+					Dir['config/**/*.example.{yaml,conf}'].each do |config_example_file_name|
+						FileUtils.cp config_example_file_name, config_example_file_name.sub('.example', '')
+					end
+
+					## HACK for testing while some server is running
+					File.write(
+						'config/server.yaml',
+						File.read('config/server.yaml').sub('port: 3000', "port: #{port}")
+					)
+
+					system 'exe/setup.sh'
+				end
+			end
+
+			let(:port) do
+				## https://stackoverflow.com/a/5985984/2630849
+				socket = Socket.new(:INET, :STREAM, 0)
+				socket.bind Addrinfo.tcp('127.0.0.1', 0)
+				result = socket.local_address.ip_port
+				socket.close
+				result
+			end
+
+			let(:expected_response_lines) do
+				[
+					'<title>FooBar</title>',
+					'<h1>Hello, world!</h1>'
+				]
+			end
+
+			it { is_expected.to include(*expected_response_lines) }
+		end
 	end
 end
