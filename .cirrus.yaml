@@ -56,9 +56,29 @@ rspec_task:
   os_setup_script:
     ## https://cirrus-ci.com/task/6357513148825600
     ## https://cirrus-ci.com/task/5062843240284160?command=os_setup#L538
-    - dnf update -y && dnf install curl git which -y
-    - curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-installer | bash
-    - curl -fsSL https://raw.githubusercontent.com/nodenv/nodenv-installer/master/bin/nodenv-installer | bash
+    ## https://cirrus-ci.com/task/6270527041961984?command=os_setup#L535
+    - dnf update -y && dnf install git which make gcc -y
+
+    ## rbenv
+    - git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+    ## https://cirrus-ci.com/task/6270527041961984?command=os_setup#L543
+    - echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
+    ## https://cirrus-ci.com/task/5656294977699840?command=os_setup#L633
+    - echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+
+    ## nodenv
+    - git clone https://github.com/nodenv/nodenv.git ~/.nodenv
+    - echo 'export PATH="$HOME/.nodenv/bin:$PATH"' >> ~/.bashrc
+    - echo 'eval "$(nodenv init -)"' >> ~/.bashrc
+
+    - source ~/.bashrc
+
+    ## https://github.com/rbenv/ruby-build#installation
+    - mkdir -p "$(rbenv root)"/plugins
+    - git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build
+    ## https://github.com/nodenv/node-build#installation
+    - mkdir -p "$(nodenv root)"/plugins
+    - git clone https://github.com/nodenv/node-build.git "$(nodenv root)"/plugins/node-build
   <<: *bundle_cache
   environment:
     CODECOV_TOKEN: ENCRYPTED[5bfb9cd3d53a72c8423ce1b84b18cf7d30fbdcf3a56a25f9cd79dbdff1c3552542578272db8088ec27d7de7f2c363d72]
