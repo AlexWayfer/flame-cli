@@ -3,6 +3,8 @@
 require 'pathname'
 require 'net/http'
 
+require 'example_file'
+
 describe 'Flame::CLI::New::App' do
 	subject(:execute_command) do
 		`#{FLAME_CLI} new app #{options} #{app_name}`
@@ -883,7 +885,9 @@ describe 'Flame::CLI::New::App' do
 					)
 
 					Dir['config/**/*.example.{yaml,conf}'].each do |config_example_file_name|
-						FileUtils.cp config_example_file_name, config_example_file_name.sub('.example', '')
+						FileUtils.cp(
+							config_example_file_name, config_example_file_name.sub(ExampleFile::SUFFIX, '')
+						)
 					end
 
 					## HACK for testing while some server is running

@@ -61,7 +61,8 @@ module <%= @module_name %>
 
 			def setup
 				## Initialize Sequel connection before models requiring
-				db_connection
+				## https://cirrus-ci.com/task/4975995981660160
+				db_connection if Dir["#{__dir__}/models/**/*"].any?
 
 				## Require dirs
 				require_dirs APP_DIRS, ignore: [%r{config/puma.rb}, %r{lib/\w+/spec/}]
