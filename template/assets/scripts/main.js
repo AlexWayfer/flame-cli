@@ -1,12 +1,14 @@
-import 'core-js/stable/string/includes'
-
-// https://github.com/zloirock/core-js/issues/618#issuecomment-522618151
-// https://github.com/zloirock/core-js/issues/619#issuecomment-522624271
-import 'core-js/stable/symbol/iterator'
-
-import 'core-js/stable/array/from'
-import 'core-js/stable/object/entries'
-import 'core-js/stable/dom-collections/for-each'
+//// Uncomment for IE11 and other old browsers compatibility,
+//// also don't forget to `core-js` dependency into `package.json`
+// import 'core-js/stable/string/includes'
+//
+// //// https://github.com/zloirock/core-js/issues/618#issuecomment-522618151
+// //// https://github.com/zloirock/core-js/issues/619#issuecomment-522624271
+// import 'core-js/stable/symbol/iterator'
+//
+// import 'core-js/stable/array/from'
+// import 'core-js/stable/object/entries'
+// import 'core-js/stable/dom-collections/for-each'
 
 document.addEventListener('DOMContentLoaded', () => {
 	// Prevent double form submission
