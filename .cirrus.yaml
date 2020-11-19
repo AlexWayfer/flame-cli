@@ -82,7 +82,10 @@ rspec_task:
   <<: *bundle_cache
   environment:
     CODECOV_TOKEN: ENCRYPTED[5bfb9cd3d53a72c8423ce1b84b18cf7d30fbdcf3a56a25f9cd79dbdff1c3552542578272db8088ec27d7de7f2c363d72]
-  test_script: bundle exec rspec
+  test_script:
+    - cat ~/.bashrc
+    - source ~/.bashrc
+    - bundle exec rspec
   only_if: ($CIRRUS_BRANCH == 'master') ||
     changesInclude(
       '.cirrus.yaml', '.gitignore', 'Gemfile', 'Rakefile', '.rspec',
