@@ -863,7 +863,7 @@ describe 'Flame::CLI::New::App' do
 						response = Net::HTTP.get URI("http://127.0.0.1:#{port}/")
 					rescue Errno::ECONNREFUSED => e
 						sleep 1
-						retry if number_of_attempts < 20
+						retry if number_of_attempts < 30
 						raise e
 					end
 
