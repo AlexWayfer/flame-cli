@@ -62,37 +62,38 @@ rspec_task:
     ## https://cirrus-ci.com/task/6270527041961984?command=os_setup#L535
     - apt update && apt upgrade -y && apt install git make gcc -y
 
-  rbenv_cache:
-    folder: $HOME/.rbenv
-    populate_script:
-      - git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+  always:
+    rbenv_cache:
+      folder: $HOME/.rbenv
+      populate_script:
+        - git clone https://github.com/rbenv/rbenv.git ~/.rbenv
 
-      ## https://cirrus-ci.com/task/6270527041961984?command=os_setup#L543
-      - echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
-      ## https://cirrus-ci.com/task/5656294977699840?command=os_setup#L633
-      - echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+        ## https://cirrus-ci.com/task/6270527041961984?command=os_setup#L543
+        - echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
+        ## https://cirrus-ci.com/task/5656294977699840?command=os_setup#L633
+        - echo 'eval "$(rbenv init -)"' >> ~/.bashrc
 
-      - source ~/.bashrc
+        - source ~/.bashrc
 
-      ## https://github.com/rbenv/ruby-build#installation
-      - mkdir -p "$(rbenv root)"/plugins
-      - git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build
+        ## https://github.com/rbenv/ruby-build#installation
+        - mkdir -p "$(rbenv root)"/plugins
+        - git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build
 
-  nodenv_cache:
-    folder: $HOME/.nodenv
-    populate_script:
-      - git clone https://github.com/nodenv/nodenv.git ~/.nodenv
+    nodenv_cache:
+      folder: $HOME/.nodenv
+      populate_script:
+        - git clone https://github.com/nodenv/nodenv.git ~/.nodenv
 
-      ## https://cirrus-ci.com/task/6270527041961984?command=os_setup#L543
-      - echo 'export PATH="$HOME/.nodenv/bin:$PATH"' >> ~/.bashrc
-      ## https://cirrus-ci.com/task/5656294977699840?command=os_setup#L633
-      - echo 'eval "$(nodenv init -)"' >> ~/.bashrc
+        ## https://cirrus-ci.com/task/6270527041961984?command=os_setup#L543
+        - echo 'export PATH="$HOME/.nodenv/bin:$PATH"' >> ~/.bashrc
+        ## https://cirrus-ci.com/task/5656294977699840?command=os_setup#L633
+        - echo 'eval "$(nodenv init -)"' >> ~/.bashrc
 
-      - source ~/.bashrc
+        - source ~/.bashrc
 
-      ## https://github.com/nodenv/node-build#installation
-      - mkdir -p "$(nodenv root)"/plugins
-      - git clone https://github.com/nodenv/node-build.git "$(nodenv root)"/plugins/node-build
+        ## https://github.com/nodenv/node-build#installation
+        - mkdir -p "$(nodenv root)"/plugins
+        - git clone https://github.com/nodenv/node-build.git "$(nodenv root)"/plugins/node-build
 
   <<: *bundle_cache
 
