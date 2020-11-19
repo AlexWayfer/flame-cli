@@ -52,12 +52,12 @@ rspec_task:
     - remark
     - rubocop
   container:
-    image: fedora
+    ## https://cirrus-ci.com/task/5233441622982656?command=bundle#L3
+    image: ruby
   os_setup_script:
     ## https://cirrus-ci.com/task/6357513148825600
-    ## https://cirrus-ci.com/task/5062843240284160?command=os_setup#L538
     ## https://cirrus-ci.com/task/6270527041961984?command=os_setup#L535
-    - dnf update -y && dnf install git which make gcc -y
+    - apt update && apt upgrade -y && apt install git make gcc -y
 
     ## rbenv
     - git clone https://github.com/rbenv/rbenv.git ~/.rbenv
