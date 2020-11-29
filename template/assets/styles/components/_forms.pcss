@@ -1,5 +1,7 @@
-$form_vertical_label_margin: 0.8em;
-$form_vertical_input_margin: 0.4em;
+:root {
+	--form-vertical-label-margin: 0.8em;
+	--form-vertical-input-margin: 0.4em;
+}
 
 form {
 	text-align: center;
@@ -8,10 +10,10 @@ form {
 		text-align: initial;
 		margin: 1em 0;
 		padding: 0.4em 1em 0.9em;
-		border-radius: $common_border_radius;
+		border-radius: var(--common-border-radius);
 		border-style: solid;
-		border-width: $input_border_width;
-		border-color: $input_border_color;
+		border-width: var(--input-border-width);
+		border-color: var(--input-border-color);
 
 		> fieldset {
 			&:first-of-type {
@@ -47,13 +49,13 @@ form {
 		overflow: hidden;
 		margin: 0;
 		padding-left: 0.4em;
-		color: lighten($error_color, 15%);
+		color: lighten(var(--error-color), 15%);
 	}
 
 	.invalid {
 		input {
-			border: $input_border_width solid lighten($error_color, 15%);
-			box-shadow: 0 0 3px lighten($error_color, 15%);
+			border: var(--input-border-width) solid lighten(var(--error-color), 15%);
+			box-shadow: 0 0 3px lighten(var(--error-color), 15%);
 		}
 
 		& ~ .error {
@@ -83,28 +85,28 @@ form {
 
 		label,
 		table {
-			margin-bottom: $form_vertical_label_margin;
+			margin-bottom: var(--form-vertical-label-margin);
 		}
 
 		label {
 			display: block;
-			// Because of inputs outline
-			// padding: 5px;
+			/** Because of inputs outline */
+			/* padding: 5px; */
 
-			#{all_horizontal_inputs()},
+			:--all-horizontal-inputs,
 			textarea,
 			select,
 			.cccombo {
 				display: block;
 				width: 100%;
-				margin-top: $form_vertical_input_margin;
+				margin-top: var(--form-vertical-input-margin);
 			}
 
 			> label {
-				margin-bottom: $form_vertical_input_margin;
+				margin-bottom: var(--form-vertical-input-margin);
 
 				&:first-of-type {
-					margin-top: $form_vertical_input_margin;
+					margin-top: var(--form-vertical-input-margin);
 				}
 			}
 		}

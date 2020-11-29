@@ -1,5 +1,9 @@
 {
 	"private": true,
+	"//": [
+		"https://github.com/Scrum/postcss-at-rules-variables/issues/204",
+		"https://github.com/postcss/postcss-custom-selectors/pull/46"
+	],
 	"dependencies": {
 		"@babel/core": "*",
 		"@babel/plugin-transform-object-assign": "*",
@@ -9,8 +13,14 @@
 		"@rollup/plugin-json": "*",
 		"@rollup/plugin-node-resolve": "*",
 		"autoprefixer": "*",
-		"postcss-cli": "*",
+		"postcss": "^8.0.0",
+		"postcss-at-rules-variables": "*",
+		"postcss-cli": "^8.0.0",
+		"postcss-custom-selectors": "*",
 		"postcss-flexbugs-fixes": "*",
+		"postcss-functions": "*",
+		"postcss-mixins": "*",
+		"postcss-nested": "*",
 		"promise-polyfill": "*",
 		"rollup": "*",
 		"sass": "*",
@@ -26,7 +36,7 @@
 		"stylelint-no-unsupported-browser-features": "*"
 	},
 	"scripts": {
-		"build:styles": "sass assets/styles/main.scss public/styles/main.css -s compressed && postcss public/styles/main.css -o public/styles/main.css",
+		"build:styles": "postcss assets/styles/ -d public/styles/ --base assets/styles/ --ext=css",
 		"build:scripts": "rollup assets/scripts/main.js -o public/scripts/compiled/main.js -c",
 		"build": "pnpm run build:styles && pnpm run build:scripts",
 		"clean:styles": "rm -f public/styles/main.css public/styles/main.css.map",

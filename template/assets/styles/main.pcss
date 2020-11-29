@@ -1,0 +1,223 @@
+@import 'lib/_breakpoints';
+@import 'lib/_clear-fix';
+@import 'lib/_inputs-with-types';
+@import 'lib/_disable-password-autocomplete';
+@import 'lib/_sticky-footer';
+
+@import '_colors';
+@import '_sizes';
+@import '_fonts';
+
+@import 'components/_header';
+@import 'components/_footer';
+@import 'components/_flash';
+@import 'components/_forms';
+@import 'components/_page';
+
+* {
+	position: relative;
+	/* outline: none; */
+
+	&:not(svg) {
+		box-sizing: border-box;
+	}
+}
+
+body {
+	margin: 0;
+	font-family: var(--main-font-family);
+
+	.hidden {
+		display: none !important;
+	}
+
+	:disabled {
+		cursor: not-allowed;
+	}
+
+	.container {
+		max-width: var(--container-max-width);
+		padding: 0 15px;
+		margin: 0 auto;
+	}
+
+	a {
+		text-decoration: none;
+		color: var(--link-text-color);
+
+		&:hover {
+			text-decoration: underline;
+		}
+
+		&[href^="mailto:"] {
+			white-space: nowrap;
+		}
+	}
+
+	/* .icon {
+		&.baseline {
+			/** https://blog.prototypr.io/align-svg-icons-to-text-and-say-goodbye-to-font-icons-d44b3d7b26b4#6e0c *
+			bottom: -0.125em;
+		}
+	} */
+
+	@define-mixin custom-background-color $background-color {
+		--color: $background-color;
+
+		background: var(--color);
+		border-color: var(--color);
+
+		&:focus {
+			--color: darken($background-color, 10%);
+		}
+
+		&:disabled {
+			--color: mix($background-color, #ddd);
+		}
+	}
+
+	@import 'lib/_small_and_large_elements';
+	@import 'lib/_input-with-clear-button';
+
+	/** https://stackoverflow.com/a/23211766/2630849 */
+	:--typing-inputs,
+	textarea {
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		appearance: none;
+	}
+
+	:--all-horizontal-inputs,
+	textarea,
+	select,
+	.cccombo > button {
+		&:disabled {
+			color: #333;
+			background: #f5f5f5;
+		}
+	}
+
+	:--all-horizontal-inputs,
+	textarea,
+	select,
+	button {
+		/** Fix for Safari :see_no_evil: */
+		margin: 0;
+		padding: var(--input-padding);
+
+		font-size: inherit;
+		font-family: inherit;
+
+		line-height: var(--input-line-height);
+		color: black;
+		background: white;
+		border: var(--input-border-width) solid var(--input-border-color);
+		border-radius: var(--input-border-radius);
+	}
+
+	textarea {
+		border-radius: var(--common-border-radius);
+	}
+
+	select {
+		appearance: none;
+
+		background-image: url(
+			"data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 9l5 5 5-5z'/></svg>"
+		);
+		background-repeat: no-repeat;
+		background-position-x: 100%;
+		background-position-y: center;
+
+		padding-right: 24px;
+
+		white-space: normal;
+	}
+
+	input {
+		&[type="range"] {
+			padding-left: 0;
+			padding-right: 0;
+			border: none;
+		}
+
+		&[type="color"] {
+			box-sizing: content-box;
+			padding: 0 0.2em;
+			height: calc(var(--input-line-height) + var(--input-vertical-padding) * 2);
+		}
+	}
+
+	button,
+	label.button,
+	a.button {
+		display: inline-block;
+
+		@mixin custom-background-color white;
+
+		border-color: var(--input-border-color);
+		border-radius: var(--button-border-radius);
+
+		&.small {
+			font-size: 0.875em;
+			padding: 0.2em 0.7em;
+		}
+
+		&.large {
+			font-size: 115%;
+			font-weight: bold;
+
+			text-transform: uppercase;
+			padding: 0.5em 0.8em;
+		}
+
+		&.primary {
+			@mixin custom-background-color var(--accent-background-color);
+
+			color: white;
+		}
+
+		&.warning {
+			@mixin custom-background-color var(--warning-background-color);
+
+			color: white;
+		}
+
+		&.danger {
+			@mixin custom-background-color var(--danger-background-color);
+
+			color: white;
+		}
+
+		&.success {
+			@mixin custom-background-color var(--success-background-color);
+
+			color: white;
+		}
+
+		&.secondary {
+			@mixin custom-background-color var(--footer-background-color);
+
+			color: white;
+		}
+
+		/* &.tertiary {
+			@mixin custom-background-color var(--tertiary-background-color);
+		} */
+
+		&.light {
+			@mixin custom-background-color white;
+
+			color: var(--accent-text-color);
+			border-color: var(--accent-background-color);
+
+			&:focus {
+				border-color: var(--accent-background-color);
+			}
+		}
+	}
+
+	.cccombo > button {
+		border-radius: var(--input-border-radius);
+	}
+}
