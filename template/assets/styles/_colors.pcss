@@ -1,0 +1,27 @@
+:root {
+	--accent-background-color: #ddd;
+	/*
+		TODO: `color-mod` or alternatives
+		https://github.com/jonathantneal/postcss-color-mod-function/issues/37
+	*/
+	--accent-text-color: darken(var(--accent-background-color), 15%);
+
+	--footer-background-color: transparent;
+	--footer-text-color: white;
+
+	/* --tertiary-background-color: #ffffff; */
+
+	--danger-background-color: lighten(red, 15%);
+	--danger-text-color: red;
+	--error-color: var(--danger-text-color);
+	--warning-background-color: orange;
+	--warning-text-color: #e67e00; /* darken(darkorange, 5%); */
+	--success-background-color: #2db92d; /* darken(limegreen, 5%); */
+	--success-text-color: green;
+	--highlight-background-color: #eee;
+	--disabled-text-color: gray;
+
+	--link-text-color: darken(var(--accent-text-color), 10%);
+
+	--input-border-color: #ccc;
+}

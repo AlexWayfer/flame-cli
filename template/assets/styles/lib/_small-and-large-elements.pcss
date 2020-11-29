@@ -1,0 +1,72 @@
+@define-mixin small-and-large-elements-common(
+	/** Probably here should be something like `$large-element-container` */
+	$small-element, $large-element, $inline
+) {
+	display: if($inline, inline-flex, flex);
+	align-items: stretch;
+
+	$(large-element),
+	$(small-element) {
+		border-radius: var(--input-border-radius);
+
+		/** Fix for Safari */
+		margin-top: 0;
+		margin-bottom: 0;
+
+		&:focus {
+			z-index: 2;
+		}
+	}
+
+	$(large-element) {
+		flex-grow: 2;
+
+		&,
+		> * {
+			width: 100%;
+		}
+	}
+
+	$(small-element) {
+		flex-grow: 0;
+	}
+
+	/** Left element */
+
+}
+
+@define-mixin left-element-among-small-and-large {
+	margin-right: -var(--common-border-width);
+
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+@define-mixin right-element-among-small-and-large {
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+@define-mixin small-and-large-elements(
+	$small-element: '> button', $large-element: '> input', $inline: false
+) {
+	$(small-element) {
+		@mixin left-element-among-small-and-large;
+	}
+
+	$(large-element) {
+		@mixin right-element-among-small-and-large;
+	}
+}
+
+@define-mixin large-and-small-elements(
+	$small-element: '> button', $large-element: '> input', $inline: false
+) {
+	$(large-element) {
+		@mixin left-element-among-small-and-large;
+	}
+
+	$(small-element) {
+		@mixin right-element-among-small-and-large;
+	}
+}
