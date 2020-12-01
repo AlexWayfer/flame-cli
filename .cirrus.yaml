@@ -62,16 +62,24 @@ rspec_task:
     ## https://cirrus-ci.com/task/6270527041961984?command=os_setup#L535
     - apt update && apt upgrade -y && apt install git make gcc -y
 
+    ## Modify `.bashrc` here because it doesn't run on cache hit:
+    ## https://cirrus-ci.com/task/6153771409473536?command=test#L42
+
+    ## https://cirrus-ci.com/task/6270527041961984?command=os_setup#L543
+    - echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
+    ## https://cirrus-ci.com/task/5656294977699840?command=os_setup#L633
+    - echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+
+    ## https://cirrus-ci.com/task/6270527041961984?command=os_setup#L543
+    - echo 'export PATH="$HOME/.nodenv/bin:$PATH"' >> ~/.bashrc
+    ## https://cirrus-ci.com/task/5656294977699840?command=os_setup#L633
+    - echo 'eval "$(nodenv init -)"' >> ~/.bashrc
+
   always:
     rbenv_cache:
       folder: $HOME/.rbenv
       populate_script:
         - git clone https://github.com/rbenv/rbenv.git ~/.rbenv
-
-        ## https://cirrus-ci.com/task/6270527041961984?command=os_setup#L543
-        - echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
-        ## https://cirrus-ci.com/task/5656294977699840?command=os_setup#L633
-        - echo 'eval "$(rbenv init -)"' >> ~/.bashrc
 
         - source ~/.bashrc
 
@@ -83,11 +91,6 @@ rspec_task:
       folder: $HOME/.nodenv
       populate_script:
         - git clone https://github.com/nodenv/nodenv.git ~/.nodenv
-
-        ## https://cirrus-ci.com/task/6270527041961984?command=os_setup#L543
-        - echo 'export PATH="$HOME/.nodenv/bin:$PATH"' >> ~/.bashrc
-        ## https://cirrus-ci.com/task/5656294977699840?command=os_setup#L633
-        - echo 'eval "$(nodenv init -)"' >> ~/.bashrc
 
         - source ~/.bashrc
 
