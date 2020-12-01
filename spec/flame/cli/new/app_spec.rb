@@ -870,7 +870,11 @@ describe 'Flame::CLI::New::App' do
 					response
 				ensure
 					Bundler.with_unbundled_env { `toys server stop` }
-					Process.wait pid
+					begin
+						Process.wait pid
+					rescue Errno::ECHILD
+						## process already stopped
+					end
 				end
 			end
 
