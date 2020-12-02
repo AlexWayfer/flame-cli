@@ -21,9 +21,9 @@ puts '```'
 
 require 'memery'
 require 'gorilla_patch'
-require 'sequel'
+# require 'sequel'
 # require 'shrine'
-require 'r18n-core'
+# require 'r18n-core'
 # require 'money'
 # require_relative 'config/config'
 

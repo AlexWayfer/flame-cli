@@ -1,41 +1,10 @@
 # frozen_string_literal: true
 
-require_relative 'constants'
-
-environment = ENV['RACK_ENV'].to_sym
-
-## Require gems
-require 'bundler/setup'
-Bundler.require(
-	:system, :server, :database,
-	:translations, :forms, :views, :assets, :mails, :others,
-	environment
-)
-
-require 'erubi/capture_end'
-# require 'voight_kampff/rack_request'
-
-## Require libs
-
-### For $RS constant:
-### http://ruby-doc.org/stdlib/libdoc/English/rdoc/English.html
-require 'English'
-
-require 'logger'
-
-### For PP.pp (differs from `pp` by arguments (width))
-require 'pp'
-
-# require 'money/bank/google_currency'
-
 ## Require application
 require_relative 'application'
 
-## Require dirs
-<%= @short_module_name %>::Application.require_dirs <%= @short_module_name %>::APP_DIRS, ignore: [%r{lib/\w+/spec/}]
-
-## Require routes
-require_relative 'routes'
+## Require project directories, define routes, etc.
+<%= @short_module_name %>::Application.setup
 
 ## Use session middleware
 if <%= @short_module_name %>::Application.config[:session]
@@ -50,7 +19,8 @@ use Rack::CommonLogger, <%= @short_module_name %>::Application.logger
 
 ## Aliases for rack-console
 if ENV['RACK_CONSOLE']
-	# <%= @short_module_name %>::Acc = <%= @short_module_name %>::Account
+	<%= @short_module_name %>::App = <%= @short_module_name %>::Application
+	## Some models, for example
 end
 
 ## Remove invalid UTF-8 characters from requests
@@ -60,7 +30,7 @@ use Rack::UTF8Sanitizer
 # use Rack::RemoveTrailingSlashes
 
 ## Parse body as pointed out in Content-type
-use Rack::PostBodyContentTypeParser
+use Rack::JSONBodyParser
 
 ## CSRF
 ## Rescued and reported by `lowlevel_error_handler` in Puma config

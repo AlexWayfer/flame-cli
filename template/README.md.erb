@@ -2,30 +2,26 @@
 
 ## Tech stack
 
-*   [**Flame** framework](https://github.com/AlexWayfer/flame)
-*   [**Sequel** ORM](https://sequel.jeremyevans.net/)
-*   [**Puma** web-server](https://puma.io/)
+*   [**Flame** web framework](https://github.com/AlexWayfer/flame)
+*   [**Sequel** ORM for relational databases](https://sequel.jeremyevans.net/)
+*   [**Puma** web server](https://puma.io/)
 
 -----
 
 ## Deployment
 
-1.  Install PostgreSQL version `11`
+1.  Install PostgreSQL version `12`.
 2.  Database setup
-    1.  Create project user:
+    1.  Create a project user:
         `createuser -U postgres <%= @app_name %>`
         (with `-P` for network-open databases)
-    2.  Create project database:
-        `createdb -U postgres <%= @app_name %> -O <%= @app_name %>`
-    3.  Enable required extensions (like `citext` or `pgcrypto`), like:
-        `psql -U postgres -c "CREATE EXTENSION citext" <%= @app_name %>`
-3.  Install [`rbenv`](https://github.com/rbenv/rbenv)
-4.  Install [`nodenv`](https://github.com/nodenv/nodenv)
-5.  Install [Yarn version 1](https://classic.yarnpkg.com/)
-6.  Clone this repository and checkout to directory
-7.  Set the [`EDITOR` environment variable][1] (`nano`, `vim`, `mcedit`, etc.)
-8.  Run `exe/setup.sh` to install Ruby (with gems), Node (with modules),
-    fill configs and run database migrations
+3.  Install [`rbenv`](https://github.com/rbenv/rbenv).
+4.  Install [`nodenv`](https://github.com/nodenv/nodenv).
+5.  Clone this repository and checkout to directory.
+6.  Set the [`EDITOR` environment variable][1] (`nano`, `vim`, `mcedit`, etc.).
+7.  Run `exe/setup.sh` to install Ruby (with gems) and fill configs.
+8.  Run `toys db create` to create database.
+9.  Run `toys db migrate` to run database migrations.
 
 [1]: https://en.wikibooks.org/wiki/Guide_to_Unix/Environment_Variables#EDITOR
 
@@ -47,10 +43,7 @@
 
 ### Server management
 
-For management server state use `./server` tool (it has usage help).
-
-`./server devel` is useful on development environment, because application
-is restarting on code (or configs) changes.
+For management server state use `toys server` command.
 
 ### Ruby console
 
@@ -74,12 +67,26 @@ toys psql
 
 ## Database migrations
 
+### Create migration
+
+```shell
+toys db migrations new migration_name
+```
+
+### List migrations
+
+```shell
+toys db migrations
+# toys db migrations list
+```
+
 ### Run migrations
 
 To latest:
 
 ```shell
 toys db migrate
+# toys db migrations run
 ```
 
 To specific version (forward or backward):
@@ -88,10 +95,12 @@ To specific version (forward or backward):
 toys db migrate --target=part_of_target_migration_name_or_version
 ```
 
-### Create migration
+### Rollback migrations
+
+`N` is a number of migrations to rollback relatively to the latest existing.
 
 ```shell
-toys db migrations new migration_name
+toys db migrations rollback N
 ```
 
 -----
@@ -104,8 +113,8 @@ toys db migrations new migration_name
 exe/update.sh
 ```
 
-It will update `master` branch, update `bundle`,
-stop `server`, run `migrations` and start `server`.
+It will update `master` branch, update bundle, stop server, run migrations
+and start server.
 
 ### Remotely
 
@@ -114,4 +123,4 @@ toys deploy
 ```
 
 It will run [`exe/update.sh` command](#locally) remotely
-through `ssh` connection from `deploy.yml` configuration file.
+through `ssh` connection from `deploy.yaml` configuration file.

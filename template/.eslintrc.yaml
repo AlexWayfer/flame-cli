@@ -13,8 +13,8 @@ rules:
     - error
     - unix
   max-len:
-    - warn
-    - code: 80
+    - error
+    - code: 100
       tabWidth: 2
       ignoreUrls: true
   quotes:
@@ -23,7 +23,7 @@ rules:
     - avoidEscape: true
   semi:
     - error
-    - always
+    - never
   no-multi-spaces:
     - error
   keyword-spacing:
@@ -36,6 +36,9 @@ rules:
   space-before-function-paren:
     - warn
     - never
+  function-paren-newline:
+    - warn
+    - consistent
   space-before-blocks:
     - warn
     - always
@@ -58,13 +61,22 @@ rules:
     - allow:
       - error
       - warn
+  no-var:
+    - error
+  arrow-body-style:
+    - warn
+  arrow-parens:
+    - warn
+    - as-needed
+  arrow-spacing:
+    - warn
 
 overrides:
-  files:
-    - "*.config.js"
-  env:
-    browser: false
-    node: true
-    es6: true
-  parserOptions:
-    sourceType: module
+  - files:
+      - "*.config.js"
+    env:
+      browser: false
+      node: true
+      es6: true
+    parserOptions:
+      sourceType: module

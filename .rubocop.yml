@@ -2,22 +2,29 @@ require:
   - rubocop-performance
   - rubocop-rspec
 
-Layout/Tab:
-  Enabled: false
+inherit_mode:
+  merge:
+    - Include
+    - Exclude
+
+Layout/IndentationStyle:
+  EnforcedStyle: tabs
   IndentationWidth: 2
 Layout/IndentationWidth:
   Width: 1
+Layout/LineLength:
+  Max: 100
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
 Layout/MultilineOperationIndentation:
   EnforcedStyle: indented
-Layout/ParameterAlignment:
-  EnforcedStyle: with_fixed_indentation
 Layout/ArgumentAlignment:
   EnforcedStyle: with_fixed_indentation
-Layout/FirstParameterIndentation:
-  EnforcedStyle: consistent
+Layout/ParameterAlignment:
+  EnforcedStyle: with_fixed_indentation
 Layout/FirstArgumentIndentation:
+  EnforcedStyle: consistent
+Layout/FirstParameterIndentation:
   EnforcedStyle: consistent
 Layout/FirstArrayElementIndentation:
   EnforcedStyle: consistent
@@ -27,37 +34,23 @@ Layout/MultilineArrayBraceLayout:
   EnforcedStyle: new_line
 Layout/MultilineHashBraceLayout:
   EnforcedStyle: new_line
-Layout/FirstArrayElementLineBreak:
-  Enabled: true
-Layout/FirstHashElementLineBreak:
-  Enabled: true
-Layout/FirstMethodArgumentLineBreak:
-  Enabled: true
-Layout/FirstMethodParameterLineBreak:
-  Enabled: true
 
 Style/ParenthesesAroundCondition:
   AllowInMultilineConditions: true
-Style/HashEachMethods:
-  Enabled: true
-Style/HashTransformKeys:
-  Enabled: true
-Style/HashTransformValues:
-  Enabled: true
-
-Lint/RaiseException:
-  Enabled: true
-Lint/StructNewOverride:
-  Enabled: true
 
 AllCops:
   TargetRubyVersion: 2.6
+  NewCops: enable
 
 Metrics/BlockLength:
   Exclude:
     - 'spec/**/*'
     - '*.gemspec'
 
+RSpec/NestedGroups:
+  Enabled: false
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
 ## Because of we're testing CLI through native calls
 RSpec/DescribeClass:
   Enabled: false
