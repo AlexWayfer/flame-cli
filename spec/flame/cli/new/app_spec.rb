@@ -888,7 +888,7 @@ describe 'Flame::CLI::New::App' do
 						File.read(temp_app_toys_file_path).sub("# #{toys_command}", toys_command)
 					)
 
-					Dir['config/**/*.example.{yaml,conf}'].each do |config_example_file_name|
+					Dir['config/**/*.example.{yaml,conf,service}'].each do |config_example_file_name|
 						FileUtils.cp(
 							config_example_file_name, config_example_file_name.sub(ExampleFile::SUFFIX, '')
 						)
