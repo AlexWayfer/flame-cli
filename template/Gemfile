@@ -46,7 +46,7 @@ end
 
 group :translations do
 	gem 'flame-r18n', github: 'AlexWayfer/flame-r18n'
-	gem 'r18n-core', github: 'r18n/r18n'
+	gem 'r18n-core'
 end
 
 group :forms do
