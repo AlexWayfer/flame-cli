@@ -41,6 +41,8 @@ Style/ParenthesesAroundCondition:
 AllCops:
   TargetRubyVersion: 2.6
   NewCops: enable
+  Exclude:
+    - template/**/*
 
 Metrics/BlockLength:
   Exclude:
