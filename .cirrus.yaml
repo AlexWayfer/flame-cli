@@ -110,5 +110,5 @@ rspec_task:
   only_if: ($CIRRUS_BRANCH == 'master') ||
     changesInclude(
       '.cirrus.yaml', '.gitignore', 'Gemfile', 'Rakefile', '.rspec',
-      '*.gemspec', 'lib/**', 'spec/**'
+      '*.gemspec', 'lib/**', 'spec/**', 'template/**'
     )
