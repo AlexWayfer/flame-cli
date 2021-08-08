@@ -22,7 +22,6 @@
 - :pattern:
     - '.node-version'
     - 'assets/scripts/**/*'
-    - 'rollup.config.js'
   :command: pnpm run build:scripts
 
 - :pattern:

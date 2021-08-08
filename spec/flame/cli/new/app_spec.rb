@@ -54,7 +54,6 @@ describe 'Flame::CLI::New::App' do
 				'- mailers/_base.rb',
 				'- mailers/mail/_base.rb',
 				'- mailers/mail/default.rb',
-				'- rollup.config.js',
 				'- views/site/errors/400.html.erb',
 				'- views/site/errors/404.html.erb',
 				'- views/site/errors/500.html.erb',
@@ -329,16 +328,6 @@ describe 'Flame::CLI::New::App' do
 						'Run `exe/setup.sh`',
 						'Add UNIX-user for project: `adduser foo_bar`',
 						'Make symbolic link of project directory to `/var/www/foo_bar`'
-					]
-				end
-
-				it { is_expected.to match_words(*expected_words) }
-			end
-
-			describe 'rollup.config.js' do
-				let(:expected_words) do
-					[
-						"name: 'FB'"
 					]
 				end
 
@@ -704,16 +693,6 @@ describe 'Flame::CLI::New::App' do
 						'Run `exe/setup.sh`',
 						'Add UNIX-user for project: `adduser foobar`',
 						'Make symbolic link of project directory to `/var/www/foobar`'
-					]
-				end
-
-				it { is_expected.to match_words(*expected_words) }
-			end
-
-			describe 'rollup.config.js' do
-				let(:expected_words) do
-					[
-						"name: 'FB'"
 					]
 				end
 
