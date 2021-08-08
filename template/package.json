@@ -7,7 +7,6 @@
 		"postcss-flexbugs-fixes": "*",
 		"promise-polyfill": "*",
 		"sass": "*",
-		"simplify-js": "*",
 		"whatwg-fetch": "*"
 	},
 	"devDependencies": {
