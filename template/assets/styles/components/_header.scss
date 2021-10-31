@@ -1,11 +1,11 @@
-$header_logo_height: 66px;
-$header_vertical_padding: 15px;
-$mobile_header_logo_height: 42px;
-$mobile_header_vertical_padding: 7px;
+$header-logo-height: 66px;
+$header-vertical-padding: 15px;
+$mobile-header-logo-height: 42px;
+$mobile-header-vertical-padding: 7px;
 
 > header {
-	background: $accent_background_color;
-	padding: $mobile_header_vertical_padding 0;
+	background: $accent-background-color;
+	padding: $mobile-header-vertical-padding 0;
 	z-index: 7;
 
 	&,

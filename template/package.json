@@ -11,11 +11,13 @@
 	},
 	"devDependencies": {
 		"eslint": "*",
+		"postcss-scss": "*",
 		"remark-cli": "*",
 		"remark-preset-lint-recommended": "*",
 		"stylelint": "*",
 		"stylelint-config-standard": "*",
-		"stylelint-no-unsupported-browser-features": "*"
+		"stylelint-no-unsupported-browser-features": "*",
+		"stylelint-scss": "*"
 	},
 	"scripts": {
 		"build:styles": "sass assets/styles/main.scss public/styles/main.css -s compressed && postcss public/styles/main.css -o public/styles/main.css",

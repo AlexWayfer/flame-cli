@@ -2,7 +2,10 @@ extends: stylelint-config-standard
 ignorePath: .gitignore
 
 plugins:
+  - stylelint-scss
   - stylelint-no-unsupported-browser-features
+
+customSyntax: postcss-scss
 
 rules:
   indentation:
