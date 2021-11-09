@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-config = <%= @short_module_name %>::Application.config
+config = <%= short_module_name %>::Application.config
 
 class << config
 	private
@@ -61,6 +61,6 @@ config.instance_exec do
 
 	%w[Server Sentry R18n Mail Sequel Shrine].each do |processor_name|
 		require_relative "processors/#{processor_name.underscore}"
-		<%= @short_module_name %>::Config::Processors.const_get(processor_name).new self
+		<%= short_module_name %>::Config::Processors.const_get(processor_name).new self
 	end
 end

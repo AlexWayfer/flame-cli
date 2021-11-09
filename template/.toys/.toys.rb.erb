@@ -15,7 +15,7 @@ alias_tool :b, :benchmark
 
 application_proc = proc do
 	require "#{root_dir}/application"
-	<%= @short_module_name %>::Application
+	<%= short_module_name %>::Application
 end
 
 config_proc = proc { application_proc.call.config }
@@ -42,7 +42,7 @@ require 'flame_deploy_toys'
 expand FlameDeployToys::Template, config_dir: config_dir
 
 require 'flame_generate_toys'
-expand FlameGenerateToys::Template, namespace: <%= @module_name %>
+expand FlameGenerateToys::Template, namespace: <%= module_name %>
 
 require 'flame_routes_toys'
 expand FlameRoutesToys::Template, application_proc: application_proc

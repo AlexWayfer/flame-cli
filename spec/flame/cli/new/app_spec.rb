@@ -24,47 +24,25 @@ describe 'Flame::CLI::New::App' do
 	end
 
 	describe 'output' do
-		let(:expected_words) do
-			[
-				"Creating '#{app_name}' directory...",
-				'Copy template directories and files...',
-				'Clean directories...',
-				'Replace module names in template...',
-				'- .toys/.toys.rb',
-				'- README.md',
-				'- application.rb',
-				'- config.ru',
-				'- config/database.example.yaml',
-				'- config/mail.example.yaml',
-				'- config/main.rb',
-				'- config/processors/mail.rb',
-				'- config/processors/r18n.rb',
-				'- config/processors/sentry.rb',
-				'- config/processors/server.rb',
-				'- config/processors/sequel.rb',
-				'- config/processors/shrine.rb',
-				'- config/puma.rb',
-				'- config/sentry.example.yaml',
-				'- config/site.example.yaml',
-				'- constants.rb',
-				'- controllers/_controller.rb',
-				'- controllers/site/_controller.rb',
-				'- controllers/site/index_controller.rb',
-				'- forms/_base.rb',
-				'- mailers/_base.rb',
-				'- mailers/mail/_base.rb',
-				'- mailers/mail/default.rb',
-				'- views/site/errors/400.html.erb',
-				'- views/site/errors/404.html.erb',
-				'- views/site/errors/500.html.erb',
-				'- views/site/index.html.erb',
-				'- views/site/layout.html.erb',
-				# 'Grant permissions to files...',
-				'Done!'
-			]
+		let(:expected_output_start) do
+			<<~OUTPUT
+				Copying files...
+				Renaming files...
+				Rendering files...
+				Clean directories...
+				Installing dependencies...
+			OUTPUT
 		end
 
-		it { is_expected.to match_words(*expected_words) }
+		let(:expected_output_end) do
+			<<~OUTPUT
+				Done.
+				To checkout into a new directory:
+					cd foo_bar
+			OUTPUT
+		end
+
+		it { is_expected.to start_with(expected_output_start).and end_with(expected_output_end) }
 	end
 
 	describe 'creates root directory with received app name' do
@@ -117,28 +95,28 @@ describe 'Flame::CLI::New::App' do
 
 		describe 'default behavior' do
 			describe '.toys/.toys.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'FB::Application',
 						'expand FlameGenerateToys::Template, namespace: FooBar'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'application.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'config.ru' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'FB::Application.setup',
 						'if FB::Application.config[:session]',
@@ -149,43 +127,43 @@ describe 'Flame::CLI::New::App' do
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'config/main.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'config = FB::Application.config',
 						'FB::Config::Processors.const_get(processor_name).new self'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'config/puma.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'config = FB::Application.config'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'config/database.example.yaml' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						":database: 'foo_bar'",
 						":user: 'foo_bar'"
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'config/mail.example.yaml' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						":name: 'FooBar.com'",
 						":email: 'info@foobar.com'",
@@ -193,135 +171,135 @@ describe 'Flame::CLI::New::App' do
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'config/sentry.example.yaml' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						':host: sentry.foobar.com'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'config/server.example.yaml' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						":unix: '/run/foo_bar/puma.sock'"
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'config/processors/mail.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'config/processors/r18n.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'config/processors/sentry.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar',
 						'FB::APP_DIRS'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'config/processors/server.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'config/processors/sequel.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'config/processors/shrine.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'constants.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar',
 						'::FB = self'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'controllers/_controller.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar',
 						'FB::Application.logger'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'controllers/site/_controller.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar',
 						'class Controller < FB::Controller'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'controllers/site/index_controller.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'README.md' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'# FooBar',
 						'`createuser -U postgres foo_bar`',
@@ -331,22 +309,22 @@ describe 'Flame::CLI::New::App' do
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to match_lines expected_lines }
 			end
 
 			describe 'forms/_base.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar',
 						'FB::Application.db_connection'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'mailers/_base.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar',
 						'@from = FB::Application.config[:mail][:from]',
@@ -359,32 +337,32 @@ describe 'Flame::CLI::New::App' do
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'mailers/mail/_base.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar',
 						'FB::Application.logger.error e'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'mailers/mail/default.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'views/site/errors/400.html.erb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'<h1><%= t.error.bad_request.title %></h1>',
 						'<h4><%= t.error.bad_request.subtitle %></h4>',
@@ -394,11 +372,11 @@ describe 'Flame::CLI::New::App' do
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'views/site/errors/404.html.erb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'<h1><%= t.error.page.itself.not_found %></h1>',
 						'<a href="<%= path_to FB::Site::IndexController %>">',
@@ -406,11 +384,11 @@ describe 'Flame::CLI::New::App' do
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'views/site/errors/500.html.erb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'<div class="page error <%= config[:environment] %>">',
 						'<h1><%= t.error.unexpected_error.title %></h1>',
@@ -428,26 +406,30 @@ describe 'Flame::CLI::New::App' do
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'views/site/layout.html.erb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					## https://github.com/rubocop-hq/rubocop/issues/8416
 					# rubocop:disable Lint/InterpolationCheck
 					[
 						'<title><%= config[:site][:site_name] %></title>',
 						'<link rel="stylesheet" href="<%= url_to "styles/#{name}.css", version: true %>" />',
-						'<% if Raven.configuration.environments.include?(config[:environment]) &&',
+						<<~LINE.chomp,
+							<% if Raven.configuration.environments.include?(config[:environment]) && !request.bot? %>
+						LINE
 						"environment: '<%= config[:environment] %>',",
-						'src="<%= url_to "/scripts/#{dir}/#{name}.js", version: true %>"',
+						<<~LINE,
+							type="text/javascript" src="<%= url_to "/scripts/\#{dir}/\#{name}.js", version: true %>"
+						LINE
 						'<a href="<%= path_to FB::Site::IndexController %>">',
 						'<h1><%= config[:site][:site_name] %></h1>'
 					]
 					# rubocop:enable Lint/InterpolationCheck
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 		end
 
@@ -455,7 +437,7 @@ describe 'Flame::CLI::New::App' do
 			let(:options) { '--domain=foobar.net' }
 
 			describe 'config/mail.example.yaml' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						":name: 'FooBar.net'",
 						":email: 'info@foobar.net'",
@@ -463,17 +445,17 @@ describe 'Flame::CLI::New::App' do
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'config/sentry.example.yaml' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						':host: sentry.foobar.net'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 		end
 
@@ -482,28 +464,28 @@ describe 'Flame::CLI::New::App' do
 			let(:options) { '--project-name=FooBar' }
 
 			describe '.toys/.toys.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'FB::Application',
 						'expand FlameGenerateToys::Template, namespace: FooBar'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'application.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'config.ru' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'FB::Application.setup',
 						'if FB::Application.config[:session]',
@@ -514,43 +496,43 @@ describe 'Flame::CLI::New::App' do
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'config/main.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'config = FB::Application.config',
 						'FB::Config::Processors.const_get(processor_name).new self'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'config/puma.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'config = FB::Application.config'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'config/database.example.yaml' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						":database: 'foobar'",
 						":user: 'foobar'"
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'config/mail.example.yaml' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						":name: 'FooBar.com'",
 						":email: 'info@foobar.com'",
@@ -558,135 +540,135 @@ describe 'Flame::CLI::New::App' do
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'config/sentry.example.yaml' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						':host: sentry.foobar.com'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'config/server.example.yaml' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						":unix: '/run/foobar/puma.sock'"
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'config/processors/mail.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'config/processors/r18n.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'config/processors/sentry.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar',
 						'FB::APP_DIRS'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'config/processors/server.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'config/processors/sequel.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'config/processors/shrine.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'constants.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar',
 						'::FB = self'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'controllers/_controller.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar',
 						'FB::Application.logger'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'controllers/site/_controller.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar',
 						'class Controller < FB::Controller'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'controllers/site/index_controller.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'README.md' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'# FooBar',
 						'`createuser -U postgres foobar`',
@@ -696,22 +678,22 @@ describe 'Flame::CLI::New::App' do
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to match_lines expected_lines }
 			end
 
 			describe 'forms/_base.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar',
 						'FB::Application.db_connection'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'mailers/_base.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar',
 						'@from = FB::Application.config[:mail][:from]',
@@ -724,59 +706,57 @@ describe 'Flame::CLI::New::App' do
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'mailers/mail/_base.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar',
 						'FB::Application.logger.error e'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'mailers/mail/default.rb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'module FooBar'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'views/site/errors/404.html.erb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'<a href="<%= path_to FB::Site::IndexController %>">'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 
 			describe 'views/site/layout.html.erb' do
-				let(:expected_words) do
+				let(:expected_lines) do
 					[
 						'<a href="<%= path_to FB::Site::IndexController %>">'
 					]
 				end
 
-				it { is_expected.to match_words(*expected_words) }
+				it { is_expected.to include_lines expected_lines }
 			end
 		end
 	end
 
 	describe 'generation' do
 		before do
-			Bundler.with_unbundled_env do
-				execute_command
+			execute_command
 
-				Dir.chdir app_name
-			end
+			Dir.chdir app_name
 		end
 
 		after do

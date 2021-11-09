@@ -1,5 +1,5 @@
 [Unit]
-Description=<%= @module_name %> Server
+Description=<%= module_name %> Server
 After=network.target
 
 # Uncomment for socket activation (see below)
@@ -10,12 +10,12 @@ After=network.target
 Type=simple
 
 # The path to the your application code root directory.
-WorkingDirectory=%h/<%= @app_name %>
+WorkingDirectory=%h/<%= app_name %>
 
 # Helpful for debugging socket activation, etc.
 # Environment=PUMA_DEBUG=1
 
-ExecStart=%h/<%= @app_name %>/exe/systemd.sh
+ExecStart=%h/<%= app_name %>/exe/systemd.sh
 
 Restart=always
 

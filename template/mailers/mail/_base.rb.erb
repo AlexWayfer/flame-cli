@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module <%= @module_name %>
+module <%= module_name %>
 	module Mailers
 		## Module for mail objects
 		module Mail
@@ -19,7 +19,7 @@ module <%= @module_name %>
 						sending_behavior
 					end
 				rescue StandardError => e
-					<%= @short_module_name %>::Application.logger.error e
+					<%= short_module_name %>::Application.logger.error e
 					Raven.capture_exception(
 						e, logger: :email, extra: { failed_recipient: to }
 					)

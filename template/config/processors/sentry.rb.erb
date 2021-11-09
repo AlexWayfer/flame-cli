@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../../lib/flame/raven_context/patch'
-
-module <%= @module_name %>
+module <%= module_name %>
 	module Config
 		module Processors
 			## Configuration for Sentry
@@ -13,7 +11,7 @@ module <%= @module_name %>
 					timeout: 10,
 					open_timeout: 10,
 					app_dirs_pattern:
-						<%= @short_module_name %>::APP_DIRS
+						<%= short_module_name %>::APP_DIRS
 							.map { |app_dir| Regexp.escape(app_dir) }
 							.join('|')
 							.yield_self { |regexp_template| /(#{regexp_template})/ }

@@ -4,22 +4,22 @@
 require_relative 'application'
 
 ## Require project directories, define routes, etc.
-<%= @short_module_name %>::Application.setup
+<%= short_module_name %>::Application.setup
 
 ## Use session middleware
-if <%= @short_module_name %>::Application.config[:session]
-	use Rack::Session::Cookie, <%= @short_module_name %>::Application.config[:session][:cookie]
+if <%= short_module_name %>::Application.config[:session]
+	use Rack::Session::Cookie, <%= short_module_name %>::Application.config[:session][:cookie]
 end
 
 ## Middleware for exceptions about too large cookies
 use Rack::Protection::MaximumCookie
 
 ## Access Logger
-use Rack::CommonLogger, <%= @short_module_name %>::Application.logger
+use Rack::CommonLogger, <%= short_module_name %>::Application.logger
 
 ## Aliases for rack-console
 if ENV['RACK_CONSOLE']
-	<%= @short_module_name %>::App = <%= @short_module_name %>::Application
+	<%= short_module_name %>::App = <%= short_module_name %>::Application
 	## Some models, for example
 end
 
@@ -37,4 +37,4 @@ use Rack::JSONBodyParser
 use Rack::Csrf, raise: true
 
 ## Run application
-run <%= @short_module_name %>::Application
+run <%= short_module_name %>::Application

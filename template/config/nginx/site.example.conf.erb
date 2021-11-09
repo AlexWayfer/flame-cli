@@ -1,15 +1,15 @@
-upstream <%= @app_name %>.ruby {
-	server unix:/run/<%= @app_name %>/puma.sock;
+upstream <%= app_name %>.ruby {
+	server unix:/run/<%= app_name %>/puma.sock;
 	#server 127.0.0.1:8080;
 }
 
 server {
 	listen       80;
 	listen       [::]:80 ipv6only=on;
-	server_name  <%= @domain_name %> *.<%= @domain_name %>;
-	return 301   https://<%= @domain_name %>$request_uri;
+	server_name  <%= domain_name %> *.<%= domain_name %>;
+	return 301   https://<%= domain_name %>$request_uri;
 
-	root        /home/<%= @app_name %>/<%= @app_name %>/public;
+	root        /home/<%= app_name %>/<%= app_name %>/public;
 	location ~ /.well-known {
 		allow all;
 	}
@@ -17,25 +17,25 @@ server {
 
 server {
 	listen       443 ssl http2;
-	server_name  www.<%= @domain_name %>;
+	server_name  www.<%= domain_name %>;
 
-	include snippets/ssl-<%= @app_name %>.conf;
+	include snippets/ssl-<%= app_name %>.conf;
 	include snippets/ssl-params.conf;
 
-	return 301   https://<%= @domain_name %>$request_uri;
+	return 301   https://<%= domain_name %>$request_uri;
 }
 
 server {
 	listen      443 ssl http2;
 	listen      [::]:443 ipv6only=on ssl http2;
-	server_name <%= @domain_name %>;
+	server_name <%= domain_name %>;
 
-	access_log  /var/log/nginx/<%= @app_name %>_access.log;
-	error_log   /var/log/nginx/<%= @app_name %>_error.log;
-	root        /home/<%= @app_name %>/<%= @app_name %>/public;
+	access_log  /var/log/nginx/<%= app_name %>_access.log;
+	error_log   /var/log/nginx/<%= app_name %>_error.log;
+	root        /home/<%= app_name %>/<%= app_name %>/public;
 
 	# SSL
-	include snippets/ssl-<%= @app_name %>.conf;
+	include snippets/ssl-<%= app_name %>.conf;
 	include snippets/ssl-params.conf;
 
 	# GZIP
@@ -67,7 +67,7 @@ server {
 	}
 
 	location @ruby {
-		proxy_pass http://<%= @app_name %>.ruby;
+		proxy_pass http://<%= app_name %>.ruby;
 	}
 
 	## Reject all unwanted queries

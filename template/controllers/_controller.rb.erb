@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module <%= @module_name %>
+module <%= module_name %>
 	## Base controller for any others controllers
 	class Controller < Flame::Controller
 		include Flame::R18n::Initialization
@@ -31,7 +31,7 @@ module <%= @module_name %>
 		private
 
 		def logger
-			<%= @short_module_name %>::Application.logger
+			<%= short_module_name %>::Application.logger
 		end
 
 		def csrf_tag

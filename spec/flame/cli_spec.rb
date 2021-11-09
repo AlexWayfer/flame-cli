@@ -4,14 +4,17 @@ describe 'Flame::CLI' do
 	describe '--help' do
 		subject { `#{FLAME_CLI} --help` }
 
-		let(:expected_words) do
+		let(:expected_lines) do
 			[
-				'Usage:', 'flame [OPTIONS] SUBCOMMAND [ARG]',
-				'Subcommands:', 'initialize, init, new',
-				'Options:', '-h, --help'
+				'Usage:',
+				'flame \[OPTIONS\] SUBCOMMAND \[ARG\] \.{3}',
+				'Subcommands:',
+				'initialize, init, new +create new entity',
+				'Options:',
+				'-h, --help'
 			]
 		end
 
-		it { is_expected.to match_words(*expected_words) }
+		it { is_expected.to match_lines expected_lines }
 	end
 end

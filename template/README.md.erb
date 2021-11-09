@@ -1,4 +1,4 @@
-# <%= @module_name %>
+# <%= module_name %>
 
 ## Tech stack
 
@@ -18,7 +18,7 @@
 6.  Setup database:
     1.  Install PostgreSQL version `12`.
     2.  Create a project user:
-        `createuser -U postgres <%= @app_name %>`
+        `createuser -U postgres <%= app_name %>`
         (with `-P` for network-open databases)
     3.  Run `toys db create` to create database.
     4.  Run `toys db migrate` to run database migrations.
@@ -30,8 +30,8 @@
 
 *   Tune PostgreSQL (via [pgtune](https://pgtune.leopard.in.ua/), for example)
 *   Set correct timezone
-*   Add UNIX-user for project: `adduser <%= @app_name %>`
-*   Make symbolic link of project directory to `/var/www/<%= @app_name %>`
+*   Add UNIX-user for project: `adduser <%= app_name %>`
+*   Make symbolic link of project directory to `/var/www/<%= app_name %>`
 *   Install and configure `nginx` (with symbolic links from `config/nginx`)
 *   Install `letsencrypt` and generate certificates
     *   Including `openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096`

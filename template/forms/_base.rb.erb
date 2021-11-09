@@ -6,7 +6,7 @@ require 'formalism/r18n_errors'
 require 'formalism/r18n_errors/validation_helpers'
 
 ## Define base form and model forms via gem
-module <%= @module_name %>
+module <%= module_name %>
 	module Forms
 		## Base class for forms
 		class Base < Formalism::Form
@@ -52,7 +52,7 @@ module <%= @module_name %>
 			private
 
 			def db_connection
-				<%= @short_module_name %>::Application.db_connection
+				<%= short_module_name %>::Application.db_connection
 			end
 
 			def after_db_transaction_commit
