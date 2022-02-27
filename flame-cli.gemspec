@@ -9,16 +9,20 @@ Gem::Specification.new do |spec|
 
 	spec.authors     = ['Alexander Popov']
 	spec.email       = ['alex.wayfer@gmail.com']
-	spec.homepage    = 'https://github.com/AlexWayfer/flame-cli'
 	spec.license     = 'MIT'
 
+	github_uri = "https://github.com/AlexWayfer/#{spec.name}"
+
+	spec.homepage = github_uri
+
 	spec.metadata = {
-		'bug_tracker_uri' => 'https://github.com/AlexWayfer/flame-cli/issues',
-		'documentation_uri' =>
-			"http://www.rubydoc.info/gems/flame-cli/#{spec.version}",
-		'homepage_uri' => 'https://github.com/AlexWayfer/flame-cli',
-		'source_code_uri' => 'https://github.com/AlexWayfer/flame-cli',
-		'wiki_uri' => 'https://github.com/AlexWayfer/flame-cli/wiki'
+		'bug_tracker_uri' => "#{github_uri}/issues",
+		'changelog_uri' => "#{github_uri}/blob/v#{spec.version}/CHANGELOG.md",
+		'documentation_uri' => "http://www.rubydoc.info/gems/#{spec.name}/#{spec.version}",
+		'homepage_uri' => spec.homepage,
+		'rubygems_mfa_required' => 'true',
+		'source_code_uri' => github_uri,
+		'wiki_uri' => "#{github_uri}/wiki"
 	}
 
 	spec.required_ruby_version = '>= 2.6', '< 4'
