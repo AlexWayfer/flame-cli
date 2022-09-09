@@ -60,7 +60,7 @@
 
 	pre,
 	code {
-		background-color: lighten($accent-background-color, 40%);
+		background-color: color.adjust($accent-background-color, $lightness: 40%);
 		padding: 0.2em 0.4em;
 	}
 

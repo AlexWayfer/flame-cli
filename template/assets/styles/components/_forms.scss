@@ -47,13 +47,13 @@ form {
 		overflow: hidden;
 		margin: 0;
 		padding-left: 0.4em;
-		color: lighten($error-color, 15%);
+		color: color.adjust($error-color, $lightness: 15%);
 	}
 
 	.invalid {
 		input {
-			border: $input-border-width solid lighten($error-color, 15%);
-			box-shadow: 0 0 3px lighten($error-color, 15%);
+			border: $input-border-width solid color.adjust($error-color, $lightness: 15%);
+			box-shadow: 0 0 3px color.adjust($error-color, $lightness: 15%);
 		}
 
 		& ~ .error {
@@ -88,6 +88,7 @@ form {
 
 		label {
 			display: block;
+
 			// Because of inputs outline
 			// padding: 5px;
 

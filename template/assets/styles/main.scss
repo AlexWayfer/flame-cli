@@ -1,3 +1,6 @@
+@use "sass:color";
+@use "sass:list";
+
 @import "lib/breakpoints";
 @import "lib/headings";
 @import "lib/clear-fix";
@@ -7,6 +10,7 @@
 
 * {
 	position: relative;
+
 	// outline: none;
 
 	&:not(svg) {
@@ -52,7 +56,7 @@ body {
 	label,
 	a {
 		&.button {
-			@extend button;
+			@extend %button;
 
 			display: inline-block;
 		}
@@ -70,14 +74,14 @@ body {
 		border-color: $background-color;
 
 		&:focus {
-			$focus-color: darken($background-color, 10%);
+			$focus-color: color.adjust($background-color, $lightness: -10%);
 
 			background: $focus-color;
 			border-color: $focus-color;
 		}
 
 		&:disabled {
-			$disabled-color: mix($background-color, #ddd);
+			$disabled-color: color.mix($background-color, #ddd);
 
 			background: $disabled-color;
 			border-color: $disabled-color;
@@ -106,7 +110,8 @@ body {
 	#{all-horizontal-inputs()},
 	textarea,
 	select,
-	button {
+	button,
+	%button {
 		// Fix for Safari :see_no_evil:
 		margin: 0;
 		padding: $input-padding;
@@ -262,7 +267,7 @@ body {
 	#{all-horizontal-inputs()} {
 		@include padding-for-inputs-with-clear-button {
 			+ button:focus {
-				outline-color: darken($highlight-background-color, 15%);
+				outline-color: color.adjust($highlight-background-color, $lightness: -15%);
 			}
 		}
 	}

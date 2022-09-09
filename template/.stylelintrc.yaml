@@ -1,8 +1,10 @@
-extends: stylelint-config-standard
+extends:
+  - stylelint-config-standard
+  - stylelint-config-standard-scss
+
 ignorePath: .gitignore
 
 plugins:
-  - stylelint-scss
   - stylelint-no-unsupported-browser-features
 
 customSyntax: postcss-scss
@@ -14,20 +16,6 @@ rules:
   max-line-length:
     - 100
     - ignorePattern: /// https?:///
-
-  at-rule-no-unknown:
-    - true
-    - ignoreAtRules:
-        - at-root
-        - mixin
-        - include
-        - extend
-        - function
-        - return
-        - each
-        - if
-        - else
-        - content
 
   no-invalid-position-at-import-rule: null
 
@@ -93,3 +81,9 @@ rules:
         - outline
         ## Let's reconcile with IE 11
         - css-appearance
+
+
+  scss/dollar-variable-empty-line-before:
+    - never
+    - ignore:
+      - after-comment

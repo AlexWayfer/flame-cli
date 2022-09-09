@@ -16,8 +16,8 @@
 		"remark-preset-lint-recommended": "*",
 		"stylelint": "*",
 		"stylelint-config-standard": "*",
-		"stylelint-no-unsupported-browser-features": "*",
-		"stylelint-scss": "*"
+		"stylelint-config-standard-scss": "*",
+		"stylelint-no-unsupported-browser-features": "*"
 	},
 	"scripts": {
 		"build:styles": "sass assets/styles/main.scss public/styles/main.css -s compressed && postcss public/styles/main.css -o public/styles/main.css",

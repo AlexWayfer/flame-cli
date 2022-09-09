@@ -2,7 +2,7 @@
 	$result: ();
 
 	@each $type in $types {
-		$result: append($result, "input[type=\"" + $type + "\"]", comma);
+		$result: list.append($result, "input[type=\"" + $type + "\"]", comma);
 	}
 
 	@return $result;
