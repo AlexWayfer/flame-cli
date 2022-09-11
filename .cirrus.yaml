@@ -58,11 +58,6 @@ rubocop_task:
     )
 
 rspec_task:
-
-  depends_on:
-    - remark
-    - rubocop
-
   container:
     ## https://cirrus-ci.com/task/5233441622982656?command=bundle#L3
     image: ruby
