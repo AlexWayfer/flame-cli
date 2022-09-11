@@ -517,35 +517,64 @@ describe 'Flame::CLI::New::App' do
 	end
 
 	describe 'generation' do
+		let(:port) do
+			## https://stackoverflow.com/a/5985984/2630849
+			socket = Socket.new(:INET, :STREAM, 0)
+			socket.bind Addrinfo.tcp('127.0.0.1', 0)
+			result = socket.local_address.ip_port
+			socket.close
+			result
+		end
+
 		before do
 			execute_command
 
 			Dir.chdir app_name
+
+			Bundler.with_unbundled_env do
+				## HACK: https://github.com/dazuma/toys/issues/57
+				toys_command = 'truncate_load_path!'
+				temp_app_toys_file_path = "#{temp_app_dir}/.toys/.toys.rb"
+				File.write(
+					temp_app_toys_file_path,
+					File.read(temp_app_toys_file_path).sub("# #{toys_command}", toys_command)
+				)
+
+				Dir['config/**/*.example.{yaml,conf,service}'].each do |config_example_file_name|
+					FileUtils.cp(
+						config_example_file_name, config_example_file_name.sub(ExampleFile::SUFFIX, '')
+					)
+				end
+
+				## HACK for testing while some server is running
+				File.write(
+					'config/server.yaml',
+					File.read('config/server.yaml').sub('port: 3000', "port: #{port}")
+				)
+
+				system 'exe/setup.sh'
+			end
 		end
 
 		after do
 			Dir.chdir '..'
 		end
 
-		describe 'linting' do
-			before do
-				Bundler.with_unbundled_env do
-					system 'exe/setup/ruby.sh'
-					system 'exe/setup/node.sh'
-				end
-			end
-
+		describe 'linting and testing' do
 			let(:commands) do
 				[
 					'bundle exec rubocop',
 					'pnpm lint',
-					'bundle audit check --update'
+					'bundle audit check --update',
+					'bundle exec rspec'
 				]
 			end
 
 			specify do
-				commands.each do |command|
-					expect(system(command)).to be true
+				Bundler.with_unbundled_env do
+					commands.each do |command|
+						expect(system(command)).to be true
+					end
 				end
 			end
 		end
@@ -580,41 +609,6 @@ describe 'Flame::CLI::New::App' do
 						## process already stopped
 					end
 				end
-			end
-
-			before do
-				Bundler.with_unbundled_env do
-					## HACK: https://github.com/dazuma/toys/issues/57
-					toys_command = 'truncate_load_path!'
-					temp_app_toys_file_path = "#{temp_app_dir}/.toys/.toys.rb"
-					File.write(
-						temp_app_toys_file_path,
-						File.read(temp_app_toys_file_path).sub("# #{toys_command}", toys_command)
-					)
-
-					Dir['config/**/*.example.{yaml,conf,service}'].each do |config_example_file_name|
-						FileUtils.cp(
-							config_example_file_name, config_example_file_name.sub(ExampleFile::SUFFIX, '')
-						)
-					end
-
-					## HACK for testing while some server is running
-					File.write(
-						'config/server.yaml',
-						File.read('config/server.yaml').sub('port: 3000', "port: #{port}")
-					)
-
-					system 'exe/setup.sh'
-				end
-			end
-
-			let(:port) do
-				## https://stackoverflow.com/a/5985984/2630849
-				socket = Socket.new(:INET, :STREAM, 0)
-				socket.bind Addrinfo.tcp('127.0.0.1', 0)
-				result = socket.local_address.ip_port
-				socket.close
-				result
 			end
 
 			let(:expected_response_lines) do
