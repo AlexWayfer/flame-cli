@@ -20,9 +20,8 @@ module <%= module_name %>
 					end
 				rescue StandardError => e
 					<%= short_module_name %>::Application.logger.error e
-					Raven.capture_exception(
-						e, logger: :email, extra: { failed_recipient: to }
-					)
+
+					Sentry.capture_exception e, logger: :email, extra: { failed_recipient: to }
 				end
 
 				def log_message

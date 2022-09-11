@@ -416,10 +416,13 @@ describe 'Flame::CLI::New::App' do
 					[
 						'<title><%= config[:site][:site_name] %></title>',
 						'<link rel="stylesheet" href="<%= url_to "styles/#{name}.css", version: true %>" />',
+						'<%',
 						<<~LINE.chomp,
-							<% if Raven.configuration.environments.include?(config[:environment]) && !request.bot? %>
+							if Sentry.configuration.enabled_environments.include?(config[:environment]) && !request.bot?
 						LINE
+						'%>',
 						"environment: '<%= config[:environment] %>',",
+						"release: '<%= Sentry.configuration.release %>',",
 						<<~LINE,
 							type="text/javascript" src="<%= url_to "/scripts/\#{dir}/\#{name}.js", version: true %>"
 						LINE
