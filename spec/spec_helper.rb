@@ -14,6 +14,10 @@ SimpleCov.start
 
 FLAME_CLI = File.join(__dir__, '../exe/flame').freeze
 
+RSpec.configure do |config|
+	config.example_status_persistence_file_path = "#{__dir__}/examples.txt"
+end
+
 RSpec::Matchers.define :include_lines do |expected_lines|
 	match do |actual_text|
 		expected_lines.all? do |expected_line|
