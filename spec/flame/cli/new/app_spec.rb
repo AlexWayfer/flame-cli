@@ -87,671 +87,432 @@ describe 'Flame::CLI::New::App' do
 	end
 
 	describe 'renders app name in files' do
-		subject { File.read File.join(app_name, *path_parts) }
-
-		let(:path_parts) { self.class.description.split('/') }
+		def read_app_file(name)
+			File.read File.join(app_name, name)
+		end
 
 		before { execute_command }
 
+		shared_examples 'include and match lines' do
+			specify do
+				expected_included_lines.each do |file_name, expected_lines|
+					expect(read_app_file(file_name)).to include_lines expected_lines
+				end
+
+				expected_matched_lines.each do |file_name, expected_lines|
+					expect(read_app_file(file_name)).to match_lines expected_lines
+				end
+			end
+		end
+
 		describe 'default behavior' do
-			describe '.toys/.toys.rb' do
-				let(:expected_lines) do
-					[
-						'FB::Application',
-						'expand FlameGenerateToys::Template, namespace: FooBar'
-					]
-				end
+			let(:expected_included_lines) do
+				{
+					'.toys/.toys.rb' =>
+						[
+							'FB::Application',
+							'expand FlameGenerateToys::Template, namespace: FooBar'
+						],
 
-				it { is_expected.to include_lines expected_lines }
-			end
+					'application.rb' =>
+						[
+							'module FooBar'
+						],
 
-			describe 'application.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar'
-					]
-				end
+					'config.ru' =>
+						[
+							'FB::Application.setup',
+							'if FB::Application.config[:session]',
+							'use Rack::Session::Cookie, FB::Application.config[:session][:cookie]',
+							'use Rack::CommonLogger, FB::Application.logger',
+							'FB::App = FB::Application',
+							'run FB::Application'
+						],
 
-				it { is_expected.to include_lines expected_lines }
-			end
+					'config/main.rb' =>
+						[
+							'config = FB::Application.config',
+							'FB::Config::Processors.const_get(processor_name).new self'
+						],
 
-			describe 'config.ru' do
-				let(:expected_lines) do
-					[
-						'FB::Application.setup',
-						'if FB::Application.config[:session]',
-						'use Rack::Session::Cookie, FB::Application.config[:session][:cookie]',
-						'use Rack::CommonLogger, FB::Application.logger',
-						'FB::App = FB::Application',
-						'run FB::Application'
-					]
-				end
+					'config/puma.rb' =>
+						[
+							'config = FB::Application.config'
+						],
 
-				it { is_expected.to include_lines expected_lines }
-			end
+					'config/database.example.yaml' =>
+						[
+							":database: 'foo_bar'",
+							":user: 'foo_bar'"
+						],
 
-			describe 'config/main.rb' do
-				let(:expected_lines) do
-					[
-						'config = FB::Application.config',
-						'FB::Config::Processors.const_get(processor_name).new self'
-					]
-				end
+					'config/mail.example.yaml' =>
+						[
+							":name: 'FooBar.com'",
+							":email: 'info@foobar.com'",
+							":user_name: 'info@foobar.com'"
+						],
 
-				it { is_expected.to include_lines expected_lines }
-			end
+					'config/sentry.example.yaml' =>
+						[
+							':host: sentry.foobar.com'
+						],
 
-			describe 'config/puma.rb' do
-				let(:expected_lines) do
-					[
-						'config = FB::Application.config'
-					]
-				end
+					'config/server.example.yaml' =>
+						[
+							":unix: '/run/foo_bar/puma.sock'"
+						],
 
-				it { is_expected.to include_lines expected_lines }
-			end
+					'config/processors/mail.rb' =>
+						[
+							'module FooBar'
+						],
 
-			describe 'config/database.example.yaml' do
-				let(:expected_lines) do
-					[
-						":database: 'foo_bar'",
-						":user: 'foo_bar'"
-					]
-				end
+					'config/processors/r18n.rb' =>
+						[
+							'module FooBar'
+						],
 
-				it { is_expected.to include_lines expected_lines }
-			end
+					'config/processors/sentry.rb' =>
+						[
+							'module FooBar',
+							'FB::APP_DIRS'
+						],
 
-			describe 'config/mail.example.yaml' do
-				let(:expected_lines) do
-					[
-						":name: 'FooBar.com'",
-						":email: 'info@foobar.com'",
-						":user_name: 'info@foobar.com'"
-					]
-				end
+					'config/processors/server.rb' =>
+						[
+							'module FooBar'
+						],
 
-				it { is_expected.to include_lines expected_lines }
-			end
+					'config/processors/sequel.rb' =>
+						[
+							'module FooBar'
+						],
 
-			describe 'config/sentry.example.yaml' do
-				let(:expected_lines) do
-					[
-						':host: sentry.foobar.com'
-					]
-				end
+					'config/processors/shrine.rb' =>
+						[
+							'module FooBar'
+						],
 
-				it { is_expected.to include_lines expected_lines }
-			end
+					'constants.rb' =>
+						[
+							'module FooBar',
+							'::FB = self'
+						],
 
-			describe 'config/server.example.yaml' do
-				let(:expected_lines) do
-					[
-						":unix: '/run/foo_bar/puma.sock'"
-					]
-				end
+					'controllers/_controller.rb' =>
+						[
+							'module FooBar',
+							'FB::Application.logger'
+						],
 
-				it { is_expected.to include_lines expected_lines }
-			end
+					'controllers/site/_controller.rb' =>
+						[
+							'module FooBar',
+							'class Controller < FB::Controller'
+						],
 
-			describe 'config/processors/mail.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar'
-					]
-				end
+					'controllers/site/index_controller.rb' =>
+						[
+							'module FooBar'
+						],
 
-				it { is_expected.to include_lines expected_lines }
-			end
+					'forms/_base.rb' =>
+						[
+							'module FooBar',
+							'FB::Application.db_connection'
+						],
 
-			describe 'config/processors/r18n.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar'
-					]
-				end
+					'mailers/_base.rb' =>
+						[
+							'module FooBar',
+							'@from = FB::Application.config[:mail][:from]',
+							'@controller = FB::MailController.new',
+							## https://github.com/rubocop-hq/rubocop/issues/8416
+							# rubocop:disable Lint/InterpolationCheck
+							'FB::Application.logger.info "#{mail.log_message} [#{index}/#{count}]..."',
+							'File.join(FB::Application.config[:tmp_dir], "mailing_#{object_id}")'
+							# rubocop:enable Lint/InterpolationCheck
+						],
 
-				it { is_expected.to include_lines expected_lines }
-			end
+					'mailers/mail/_base.rb' =>
+						[
+							'module FooBar',
+							'FB::Application.logger.error e'
+						],
 
-			describe 'config/processors/sentry.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar',
-						'FB::APP_DIRS'
-					]
-				end
+					'mailers/mail/default.rb' =>
+						[
+							'module FooBar'
+						],
 
-				it { is_expected.to include_lines expected_lines }
-			end
+					'views/site/errors/400.html.erb' =>
+						[
+							'<h1><%= t.error.bad_request.title %></h1>',
+							'<h4><%= t.error.bad_request.subtitle %></h4>',
+							'<%= t.error.bad_request.text %>',
+							'<a href="<%= path_to_back %>">',
+							'<%= t.button.back %>'
+						],
 
-			describe 'config/processors/server.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar'
-					]
-				end
+					'views/site/errors/404.html.erb' =>
+						[
+							'<h1><%= t.error.page.itself.not_found %></h1>',
+							'<a href="<%= path_to FB::Site::IndexController %>">',
+							'<%= t.button.home %>'
+						],
 
-				it { is_expected.to include_lines expected_lines }
-			end
+					'views/site/errors/500.html.erb' =>
+						[
+							'<div class="page error <%= config[:environment] %>">',
+							'<h1><%= t.error.unexpected_error.title %></h1>',
+							'<h4><%= t.error.unexpected_error.subtitle %></h4>',
+							'<%= t.error.unexpected_error.text %>',
+							"<% if config[:environment] == 'development' %>",
+							'<pre><h3><b><%==',
+							'%></b></h3><%',
+							'%><h4 class="sql"><%=',
+							'%></h4><% end %><%=',
+							'%></pre>',
+							'<% end %>',
+							'<a href="<%= path_to_back %>">',
+							'<%= t.button.back %>'
+						],
 
-			describe 'config/processors/sequel.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'config/processors/shrine.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'constants.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar',
-						'::FB = self'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'controllers/_controller.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar',
-						'FB::Application.logger'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'controllers/site/_controller.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar',
-						'class Controller < FB::Controller'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'controllers/site/index_controller.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'README.md' do
-				let(:expected_lines) do
-					[
-						'# FooBar',
-						'`createuser -U postgres foo_bar`',
-						'Run `exe/setup.sh`',
-						'Add UNIX-user for project: `adduser foo_bar`',
-						'Make symbolic link of project directory to `/var/www/foo_bar`'
-					]
-				end
-
-				it { is_expected.to match_lines expected_lines }
-			end
-
-			describe 'forms/_base.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar',
-						'FB::Application.db_connection'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'mailers/_base.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar',
-						'@from = FB::Application.config[:mail][:from]',
-						'@controller = FB::MailController.new',
-						## https://github.com/rubocop-hq/rubocop/issues/8416
-						# rubocop:disable Lint/InterpolationCheck
-						'FB::Application.logger.info "#{mail.log_message} [#{index}/#{count}]..."',
-						'File.join(FB::Application.config[:tmp_dir], "mailing_#{object_id}")'
-						# rubocop:enable Lint/InterpolationCheck
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'mailers/mail/_base.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar',
-						'FB::Application.logger.error e'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'mailers/mail/default.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'views/site/errors/400.html.erb' do
-				let(:expected_lines) do
-					[
-						'<h1><%= t.error.bad_request.title %></h1>',
-						'<h4><%= t.error.bad_request.subtitle %></h4>',
-						'<%= t.error.bad_request.text %>',
-						'<a href="<%= path_to_back %>">',
-						'<%= t.button.back %>'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'views/site/errors/404.html.erb' do
-				let(:expected_lines) do
-					[
-						'<h1><%= t.error.page.itself.not_found %></h1>',
-						'<a href="<%= path_to FB::Site::IndexController %>">',
-						'<%= t.button.home %>'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'views/site/errors/500.html.erb' do
-				let(:expected_lines) do
-					[
-						'<div class="page error <%= config[:environment] %>">',
-						'<h1><%= t.error.unexpected_error.title %></h1>',
-						'<h4><%= t.error.unexpected_error.subtitle %></h4>',
-						'<%= t.error.unexpected_error.text %>',
-						"<% if config[:environment] == 'development' %>",
-						'<pre><h3><b><%==',
-						'%></b></h3><%',
-						'%><h4 class="sql"><%=',
-						'%></h4><% end %><%=',
-						'%></pre>',
-						'<% end %>',
-						'<a href="<%= path_to_back %>">',
-						'<%= t.button.back %>'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'views/site/layout.html.erb' do
-				let(:expected_lines) do
 					## https://github.com/rubocop-hq/rubocop/issues/8416
 					# rubocop:disable Lint/InterpolationCheck
-					[
-						'<title><%= config[:site][:site_name] %></title>',
-						'<link rel="stylesheet" href="<%= url_to "styles/#{name}.css", version: true %>" />',
-						'<%',
-						<<~LINE.chomp,
-							if Sentry.configuration.enabled_environments.include?(config[:environment]) && !request.bot?
-						LINE
-						'%>',
-						"environment: '<%= config[:environment] %>',",
-						"release: '<%= Sentry.configuration.release %>',",
-						<<~LINE,
-							type="text/javascript" src="<%= url_to "/scripts/\#{dir}/\#{name}.js", version: true %>"
-						LINE
-						'<a href="<%= path_to FB::Site::IndexController %>">',
-						'<h1><%= config[:site][:site_name] %></h1>'
-					]
+					'views/site/layout.html.erb' =>
+						[
+							'<title><%= config[:site][:site_name] %></title>',
+							'<link rel="stylesheet" href="<%= url_to "styles/#{name}.css", version: true %>" />',
+							'<%',
+							<<~LINE.chomp,
+								if Sentry.configuration.enabled_environments.include?(config[:environment]) && !request.bot?
+							LINE
+							'%>',
+							"environment: '<%= config[:environment] %>',",
+							"release: '<%= Sentry.configuration.release %>',",
+							<<~LINE,
+								type="text/javascript" src="<%= url_to "/scripts/\#{dir}/\#{name}.js", version: true %>"
+							LINE
+							'<a href="<%= path_to FB::Site::IndexController %>">',
+							'<h1><%= config[:site][:site_name] %></h1>'
+						]
 					# rubocop:enable Lint/InterpolationCheck
-				end
-
-				it { is_expected.to include_lines expected_lines }
+				}
 			end
+
+			let(:expected_matched_lines) do
+				{
+					'README.md' =>
+						[
+							'# FooBar',
+							'`createuser -U postgres foo_bar`',
+							'Run `exe/setup.sh`',
+							'Add UNIX-user for project: `adduser foo_bar`'
+						]
+				}
+			end
+
+			include_examples 'include and match lines'
 		end
 
 		describe 'with `--domain` option' do
 			let(:options) { '--domain=foobar.net' }
 
-			describe 'config/mail.example.yaml' do
-				let(:expected_lines) do
-					[
-						":name: 'FooBar.net'",
-						":email: 'info@foobar.net'",
-						":user_name: 'info@foobar.net'"
-					]
-				end
+			let(:expected_included_lines) do
+				{
+					'config/mail.example.yaml' =>
+						[
+							":name: 'FooBar.net'",
+							":email: 'info@foobar.net'",
+							":user_name: 'info@foobar.net'"
+						],
 
-				it { is_expected.to include_lines expected_lines }
+					'config/sentry.example.yaml' =>
+						[
+							':host: sentry.foobar.net'
+						]
+				}
 			end
 
-			describe 'config/sentry.example.yaml' do
-				let(:expected_lines) do
-					[
-						':host: sentry.foobar.net'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
+			let(:expected_matched_lines) do
+				{}
 			end
+
+			include_examples 'include and match lines'
 		end
 
 		describe 'with `--project-name` option' do
 			let(:app_name) { 'foobar' }
 			let(:options) { '--project-name=FooBar' }
 
-			describe '.toys/.toys.rb' do
-				let(:expected_lines) do
-					[
-						'FB::Application',
-						'expand FlameGenerateToys::Template, namespace: FooBar'
-					]
-				end
+			let(:expected_included_lines) do
+				{
+					'.toys/.toys.rb' =>
+						[
+							'FB::Application',
+							'expand FlameGenerateToys::Template, namespace: FooBar'
+						],
 
-				it { is_expected.to include_lines expected_lines }
+					'application.rb' =>
+						[
+							'module FooBar'
+						],
+
+					'config.ru' =>
+						[
+							'FB::Application.setup',
+							'if FB::Application.config[:session]',
+							'use Rack::Session::Cookie, FB::Application.config[:session][:cookie]',
+							'use Rack::CommonLogger, FB::Application.logger',
+							'FB::App = FB::Application',
+							'run FB::Application'
+						],
+
+					'config/main.rb' =>
+						[
+							'config = FB::Application.config',
+							'FB::Config::Processors.const_get(processor_name).new self'
+						],
+
+					'config/puma.rb' =>
+						[
+							'config = FB::Application.config'
+						],
+
+					'config/database.example.yaml' =>
+						[
+							":database: 'foobar'",
+							":user: 'foobar'"
+						],
+
+					'config/mail.example.yaml' =>
+						[
+							":name: 'FooBar.com'",
+							":email: 'info@foobar.com'",
+							":user_name: 'info@foobar.com'"
+						],
+
+					'config/sentry.example.yaml' =>
+						[
+							':host: sentry.foobar.com'
+						],
+
+					'config/server.example.yaml' =>
+						[
+							":unix: '/run/foobar/puma.sock'"
+						],
+
+					'config/processors/mail.rb' =>
+						[
+							'module FooBar'
+						],
+
+					'config/processors/r18n.rb' =>
+						[
+							'module FooBar'
+						],
+
+					'config/processors/sentry.rb' =>
+						[
+							'module FooBar',
+							'FB::APP_DIRS'
+						],
+
+					'config/processors/server.rb' =>
+						[
+							'module FooBar'
+						],
+
+					'config/processors/sequel.rb' =>
+						[
+							'module FooBar'
+						],
+
+					'config/processors/shrine.rb' =>
+						[
+							'module FooBar'
+						],
+
+					'constants.rb' =>
+						[
+							'module FooBar',
+							'::FB = self'
+						],
+
+					'controllers/_controller.rb' =>
+						[
+							'module FooBar',
+							'FB::Application.logger'
+						],
+
+					'controllers/site/_controller.rb' =>
+						[
+							'module FooBar',
+							'class Controller < FB::Controller'
+						],
+
+					'controllers/site/index_controller.rb' =>
+						[
+							'module FooBar'
+						],
+
+					'forms/_base.rb' =>
+						[
+							'module FooBar',
+							'FB::Application.db_connection'
+						],
+
+					'mailers/_base.rb' =>
+						[
+							'module FooBar',
+							'@from = FB::Application.config[:mail][:from]',
+							'@controller = FB::MailController.new',
+							## https://github.com/rubocop-hq/rubocop/issues/8416
+							# rubocop:disable Lint/InterpolationCheck
+							'FB::Application.logger.info "#{mail.log_message} [#{index}/#{count}]..."',
+							'File.join(FB::Application.config[:tmp_dir], "mailing_#{object_id}")'
+							# rubocop:enable Lint/InterpolationCheck
+						],
+
+					'mailers/mail/_base.rb' =>
+						[
+							'module FooBar',
+							'FB::Application.logger.error e'
+						],
+
+					'mailers/mail/default.rb' =>
+						[
+							'module FooBar'
+						],
+
+					'views/site/errors/404.html.erb' =>
+						[
+							'<a href="<%= path_to FB::Site::IndexController %>">'
+						],
+
+					'views/site/layout.html.erb' =>
+						[
+							'<a href="<%= path_to FB::Site::IndexController %>">'
+						]
+				}
 			end
 
-			describe 'application.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
+			let(:expected_matched_lines) do
+				{
+					'README.md' =>
+						[
+							'# FooBar',
+							'`createuser -U postgres foobar`',
+							'Run `exe/setup.sh`',
+							'Add UNIX-user for project: `adduser foobar`',
+							'Make symbolic link of project directory to `/var/www/foobar`'
+						]
+				}
 			end
 
-			describe 'config.ru' do
-				let(:expected_lines) do
-					[
-						'FB::Application.setup',
-						'if FB::Application.config[:session]',
-						'use Rack::Session::Cookie, FB::Application.config[:session][:cookie]',
-						'use Rack::CommonLogger, FB::Application.logger',
-						'FB::App = FB::Application',
-						'run FB::Application'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'config/main.rb' do
-				let(:expected_lines) do
-					[
-						'config = FB::Application.config',
-						'FB::Config::Processors.const_get(processor_name).new self'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'config/puma.rb' do
-				let(:expected_lines) do
-					[
-						'config = FB::Application.config'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'config/database.example.yaml' do
-				let(:expected_lines) do
-					[
-						":database: 'foobar'",
-						":user: 'foobar'"
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'config/mail.example.yaml' do
-				let(:expected_lines) do
-					[
-						":name: 'FooBar.com'",
-						":email: 'info@foobar.com'",
-						":user_name: 'info@foobar.com'"
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'config/sentry.example.yaml' do
-				let(:expected_lines) do
-					[
-						':host: sentry.foobar.com'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'config/server.example.yaml' do
-				let(:expected_lines) do
-					[
-						":unix: '/run/foobar/puma.sock'"
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'config/processors/mail.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'config/processors/r18n.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'config/processors/sentry.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar',
-						'FB::APP_DIRS'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'config/processors/server.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'config/processors/sequel.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'config/processors/shrine.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'constants.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar',
-						'::FB = self'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'controllers/_controller.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar',
-						'FB::Application.logger'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'controllers/site/_controller.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar',
-						'class Controller < FB::Controller'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'controllers/site/index_controller.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'README.md' do
-				let(:expected_lines) do
-					[
-						'# FooBar',
-						'`createuser -U postgres foobar`',
-						'Run `exe/setup.sh`',
-						'Add UNIX-user for project: `adduser foobar`',
-						'Make symbolic link of project directory to `/var/www/foobar`'
-					]
-				end
-
-				it { is_expected.to match_lines expected_lines }
-			end
-
-			describe 'forms/_base.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar',
-						'FB::Application.db_connection'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'mailers/_base.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar',
-						'@from = FB::Application.config[:mail][:from]',
-						'@controller = FB::MailController.new',
-						## https://github.com/rubocop-hq/rubocop/issues/8416
-						# rubocop:disable Lint/InterpolationCheck
-						'FB::Application.logger.info "#{mail.log_message} [#{index}/#{count}]..."',
-						'File.join(FB::Application.config[:tmp_dir], "mailing_#{object_id}")'
-						# rubocop:enable Lint/InterpolationCheck
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'mailers/mail/_base.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar',
-						'FB::Application.logger.error e'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'mailers/mail/default.rb' do
-				let(:expected_lines) do
-					[
-						'module FooBar'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'views/site/errors/404.html.erb' do
-				let(:expected_lines) do
-					[
-						'<a href="<%= path_to FB::Site::IndexController %>">'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
-
-			describe 'views/site/layout.html.erb' do
-				let(:expected_lines) do
-					[
-						'<a href="<%= path_to FB::Site::IndexController %>">'
-					]
-				end
-
-				it { is_expected.to include_lines expected_lines }
-			end
+			include_examples 'include and match lines'
 		end
 	end
 
@@ -766,46 +527,27 @@ describe 'Flame::CLI::New::App' do
 			Dir.chdir '..'
 		end
 
-		describe 'RuboCop-satisfying app' do
-			subject do
-				system 'bundle exec rubocop'
-			end
-
+		describe 'linting' do
 			before do
 				Bundler.with_unbundled_env do
 					system 'exe/setup/ruby.sh'
-				end
-			end
-
-			it { is_expected.to be true }
-		end
-
-		describe 'assets linting satisfying app' do
-			subject do
-				system 'pnpm lint'
-			end
-
-			before do
-				Bundler.with_unbundled_env do
 					system 'exe/setup/node.sh'
 				end
 			end
 
-			it { is_expected.to be true }
-		end
-
-		describe 'Bundler Audit satisfying app' do
-			subject do
-				system 'bundle audit check --update'
+			let(:commands) do
+				[
+					'bundle exec rubocop',
+					'pnpm lint',
+					'bundle audit check --update'
+				]
 			end
 
-			before do
-				Bundler.with_unbundled_env do
-					system 'exe/setup/ruby.sh'
+			specify do
+				commands.each do |command|
+					expect(system(command)).to be true
 				end
 			end
-
-			it { is_expected.to be true }
 		end
 
 		describe 'working app' do

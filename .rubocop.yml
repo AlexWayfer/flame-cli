@@ -60,3 +60,9 @@ RSpec/DescribeClass:
 RSpec/RepeatedExampleGroupBody:
   Exclude:
     - spec/flame/cli/new/app_spec.rb
+
+## Speed-up tests, there are no mutations
+RSpec/MultipleExpectations:
+  Enabled: false
+RSpec/ExampleLength:
+  Max: 10
