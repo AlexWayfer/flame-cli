@@ -1,11 +1,11 @@
 # Flame CLI
 
 [![Cirrus CI - Base Branch Build Status](https://img.shields.io/cirrus/github/AlexWayfer/flame-cli?style=flat-square)](https://cirrus-ci.com/github/AlexWayfer/flame-cli)
-[![Codecov branch](https://img.shields.io/codecov/c/github/AlexWayfer/flame-cli/master.svg?style=flat-square)](https://codecov.io/gh/AlexWayfer/flame-cli)
+[![Codecov branch](https://img.shields.io/codecov/c/github/AlexWayfer/flame-cli/main.svg?style=flat-square)](https://codecov.io/gh/AlexWayfer/flame-cli)
 [![Code Climate](https://img.shields.io/codeclimate/maintainability/AlexWayfer/flame-cli.svg?style=flat-square)](https://codeclimate.com/github/AlexWayfer/flame-cli)
 [![Depfu](https://img.shields.io/depfu/AlexWayfer/flame-cli?style=flat-square)](https://depfu.com/repos/github/AlexWayfer/flame-cli)
-[![Inline docs](https://inch-ci.org/github/AlexWayfer/flame-cli.svg?branch=master)](https://inch-ci.org/github/AlexWayfer/flame-cli)
-[![license](https://img.shields.io/github/license/AlexWayfer/flame-cli.svg?style=flat-square)](https://github.com/AlexWayfer/flame-cli/blob/master/LICENSE.txt)
+[![Inline docs](https://inch-ci.org/github/AlexWayfer/flame-cli.svg?branch=main)](https://inch-ci.org/github/AlexWayfer/flame-cli)
+[![license](https://img.shields.io/github/license/AlexWayfer/flame-cli.svg?style=flat-square)](https://github.com/AlexWayfer/flame-cli/blob/main/LICENSE.txt)
 [![Gem](https://img.shields.io/gem/v/flame-cli.svg?style=flat-square)](https://rubygems.org/gems/flame-cli)
 
 CLI for [Flame web framework](https://github.com/AlexWayfer/flame).
