@@ -30,9 +30,9 @@ module Flame
 
 					clean_dirs
 
-					install_dependencies
-
 					initialize_git
+
+					setup_project
 
 					FileUtils.rm_r @git_tmp_dir if git?
 
@@ -46,16 +46,11 @@ module Flame
 					FileUtils.rm Dir.glob('**/.keep', File::FNM_DOTMATCH)
 				end
 
-				def install_dependencies
-					puts 'Installing dependencies...'
+				def setup_project
+					puts 'Setup project...'
 
 					Dir.chdir name do
-						## Helpful for specs of templates, probably somewhere else
-						Bundler.with_unbundled_env do
-							system 'bundle update'
-						end
-
-						system 'pnpm install' if File.exist? 'package.json'
+						system 'exe/setup.sh'
 					end
 				end
 			end
