@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'date'
+require 'securerandom'
+
 require 'project_generator'
 
 require_relative 'app/process_files'

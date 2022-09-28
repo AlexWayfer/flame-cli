@@ -30,7 +30,8 @@ use Rack::UTF8Sanitizer
 # use Rack::RemoveTrailingSlashes
 
 ## Parse body as pointed out in Content-type
-use Rack::JSONBodyParser
+## https://github.com/rack/rack-contrib/issues/183
+# use Rack::JSONBodyParser
 
 ## CSRF
 ## Rescued and reported by `lowlevel_error_handler` in Puma config

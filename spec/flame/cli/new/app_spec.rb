@@ -7,7 +7,9 @@ require 'example_file'
 
 describe 'Flame::CLI::New::App' do
 	subject(:execute_command) do
-		`#{FLAME_CLI} new app #{options} #{app_name}`
+		Bundler.with_unbundled_env do
+			`#{FLAME_CLI} new app #{options} #{app_name}`
+		end
 	end
 
 	let(:app_name) { 'foo_bar' }
@@ -30,8 +32,16 @@ describe 'Flame::CLI::New::App' do
 				Renaming files...
 				Rendering files...
 				Clean directories...
-				Installing dependencies...
+				Initializing git...
 			OUTPUT
+		end
+
+		let(:expected_output_mid) do
+			[
+				<<~OUTPUT
+					Setup project...
+				OUTPUT
+			]
 		end
 
 		let(:expected_output_end) do
@@ -42,7 +52,12 @@ describe 'Flame::CLI::New::App' do
 			OUTPUT
 		end
 
-		it { is_expected.to start_with(expected_output_start).and end_with(expected_output_end) }
+		specify do
+			expect(execute_command)
+				.to start_with(expected_output_start)
+				.and include(*expected_output_mid)
+				.and end_with(expected_output_end)
+		end
 	end
 
 	describe 'creates root directory with received app name' do
@@ -308,7 +323,6 @@ describe 'Flame::CLI::New::App' do
 						[
 							'# FooBar',
 							'`createuser -U postgres foo_bar`',
-							'Run `exe/setup.sh`',
 							'Add UNIX-user for project: `adduser foo_bar`'
 						]
 				}
@@ -505,7 +519,6 @@ describe 'Flame::CLI::New::App' do
 						[
 							'# FooBar',
 							'`createuser -U postgres foobar`',
-							'Run `exe/setup.sh`',
 							'Add UNIX-user for project: `adduser foobar`',
 							'Make symbolic link of project directory to `/var/www/foobar`'
 						]
@@ -540,19 +553,11 @@ describe 'Flame::CLI::New::App' do
 					File.read(temp_app_toys_file_path).sub("# #{toys_command}", toys_command)
 				)
 
-				Dir['config/**/*.example.{yaml,conf,service}'].each do |config_example_file_name|
-					FileUtils.cp(
-						config_example_file_name, config_example_file_name.sub(ExampleFile::SUFFIX, '')
-					)
-				end
-
 				## HACK for testing while some server is running
 				File.write(
 					'config/server.yaml',
 					File.read('config/server.yaml').sub('port: 3000', "port: #{port}")
 				)
-
-				system 'exe/setup.sh'
 			end
 		end
 

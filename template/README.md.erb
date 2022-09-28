@@ -14,8 +14,8 @@
 2.  Install [`nodenv`](https://github.com/nodenv/nodenv).
 3.  Clone this repository and checkout to directory.
 4.  Set the [`EDITOR` environment variable][1] (`nano`, `vim`, `mcedit`, etc.).
-5.  Run `exe/setup.sh` to install Ruby (with gems), Node.js (with modules) and fill configs.
-6.  Setup database:
+    It'll be useful for future `toys config check` runs.
+5.  Setup database:
     1.  Install PostgreSQL version `12`.
     2.  Create a project user:
         `createuser -U postgres <%= app_name %>`

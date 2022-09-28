@@ -9,7 +9,8 @@ then
 	if [ ! -f ".ruby-version" ]
 	then
 		echo "File '.ruby-version' not found. Installing last stable version..."
-		latest_version=$(rbenv install -l | grep '^[[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\+$' | tail -1)
+		## https://github.com/rbenv/ruby-build/issues/2054
+		latest_version=$(rbenv install -l 2>&1 | grep '^[[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\+$' | tail -1)
 		exe rbenv install -s $latest_version
 		exe rbenv local $latest_version
 	else
@@ -24,6 +25,4 @@ if [ ! -f "Gemfile.lock" ] || [ \
 then exe gem install bundler --conservative
 fi
 
-if ! bundle check
-then exe bundle install
-fi
+bundle install
