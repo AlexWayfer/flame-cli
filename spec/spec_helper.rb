@@ -4,10 +4,9 @@ require 'pry-byebug'
 
 require 'simplecov'
 
-## TODO: Update to a new uploader
-if ENV['CODECOV_TOKEN']
-	require 'codecov'
-	SimpleCov.formatter = SimpleCov::Formatter::Codecov
+if ENV['CI']
+	require 'simplecov-cobertura'
+	SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
 end
 
 SimpleCov.start
