@@ -80,6 +80,10 @@ rspec_task:
     ## https://cirrus-ci.com/task/5656294977699840?command=os_setup#L633
     - echo 'eval "$(nodenv init -)"' >> ~/.bashrc
 
+    ## Suppress git hints
+    - git config --global init.defaultBranch main
+    - git config --global pull.rebase true
+
   always:
     rbenv_cache:
       folder: $HOME/.rbenv
