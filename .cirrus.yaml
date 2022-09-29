@@ -88,9 +88,9 @@ rspec_task:
     rbenv_cache:
       folder: $HOME/.rbenv
       populate_script:
-        - git clone https://github.com/rbenv/rbenv.git ~/.rbenv
-
         - source ~/.bashrc
+
+        - git clone https://github.com/rbenv/rbenv.git ~/.rbenv
 
         ## https://github.com/rbenv/ruby-build#installation
         - mkdir -p "$(rbenv root)"/plugins
@@ -99,9 +99,9 @@ rspec_task:
     nodenv_cache:
       folder: $HOME/.nodenv
       populate_script:
-        - git clone https://github.com/nodenv/nodenv.git ~/.nodenv
-
         - source ~/.bashrc
+
+        - git clone https://github.com/nodenv/nodenv.git ~/.nodenv
 
         ## https://github.com/nodenv/node-build#installation
         - mkdir -p "$(nodenv root)"/plugins
