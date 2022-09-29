@@ -65,7 +65,7 @@ rspec_task:
   os_setup_script:
     ## https://cirrus-ci.com/task/6357513148825600
     ## https://cirrus-ci.com/task/6270527041961984?command=os_setup#L535
-    - apt update && apt upgrade -y && apt install git make gcc -y
+    - apt-get update && apt-get upgrade -y && apt-get install git make gcc -y
 
     ## Modify `.bashrc` here because it doesn't run on cache hit:
     ## https://cirrus-ci.com/task/6153771409473536?command=test#L42
