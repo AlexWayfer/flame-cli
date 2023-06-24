@@ -29,23 +29,6 @@ Gem::Specification.new do |spec|
 
 	spec.add_runtime_dependency 'project_generator', '~> 0.3.0'
 
-	spec.add_development_dependency 'pry-byebug', '~> 3.9'
-
-	spec.add_development_dependency 'bundler', '~> 2.0'
-	spec.add_development_dependency 'gem_toys', '~> 0.12.1'
-	spec.add_development_dependency 'toys', '~> 0.14.2'
-
-	spec.add_development_dependency 'bundler-audit', '~> 0.9.0'
-
-	spec.add_development_dependency 'rspec', '~> 3.9'
-	spec.add_development_dependency 'simplecov', '~> 0.22.0'
-	spec.add_development_dependency 'simplecov-cobertura', '~> 2.1'
-
-	spec.add_development_dependency 'example_file', '~> 0.4.0'
-	spec.add_development_dependency 'rubocop', '~> 1.53.0'
-	spec.add_development_dependency 'rubocop-performance', '~> 1.0'
-	spec.add_development_dependency 'rubocop-rspec', '~> 2.0'
-
 	spec.files = Dir.glob('{lib,template}/**/*', File::FNM_DOTMATCH)
 	spec.bindir = 'exe'
 	spec.executables = ['flame']
