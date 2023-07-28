@@ -27,4 +27,4 @@
 - :pattern:
     - '.node-version'
     - 'package.json'
-  :command: pnpm install && pnpm run build
+  :command: pnpm update && pnpm run build

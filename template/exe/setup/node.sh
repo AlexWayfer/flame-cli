@@ -21,6 +21,7 @@ exe npm install -g pnpm
 
 exe nodenv rehash
 
-exe pnpm install
+## `install` somewhy uses old versions when there are `*` in `package.json`
+exe pnpm update
 
 exe pnpm run build
