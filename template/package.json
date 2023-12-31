@@ -11,6 +11,7 @@
 		"whatwg-fetch": "*"
 	},
 	"devDependencies": {
+		"@stylistic/stylelint-config": "*",
 		"eslint": "*",
 		"postcss-scss": "*",
 		"remark-cli": "*",
